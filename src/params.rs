@@ -17,8 +17,18 @@ pub enum IpsToConnect {
 }
 
 pub enum ProxyType {
-    Http,   // "http"
-    Socks5, // "socks"
+    Http,
+    Socks5,
+}
+
+impl ApiParams for ProxyType {
+    fn to_query_string(&self) -> String {
+        match self {
+            ProxyType::Http => "http",
+            ProxyType::Socks5 => "socks",
+        }
+        .to_string()
+    }
 }
 
 pub enum State {

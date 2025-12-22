@@ -93,12 +93,16 @@ impl Client {
                     .map_err(|err| error::ApiError::ReqwestError { source: err })?;
 
                 if response_status == reqwest::StatusCode::TOO_MANY_REQUESTS {
-                    Err(error::ApiError::TooManyRequests {
+                    return Err(error::ApiError::TooManyRequests {
                         response: response_text,
-                    })
-                } else {
-                    unimplemented!();
+                    });
                 }
+
+                if !response_status.is_success() {
+                    return Err(error::ApiError::parse_from_response_body(&response_text))?;
+                }
+
+                todo!();
             }
             Err(err) => Err(error::ApiError::ReqwestError { source: err }),
         }

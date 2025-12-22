@@ -85,11 +85,9 @@ impl DocumentedErrorCode {
 impl ApiError {
     pub(crate) fn parse_from_response_body(body: &str) -> Self {
         let body = body.to_string();
-        let Ok(Value::Object(body_value)) = serde_json::from_str::<Value>(&body) else {
-            return Self::UnknownError { response: body };
-        };
 
-        if let Some(Value::String(code)) = body_value.get("error_id")
+        if let Ok(Value::Object(body_value)) = serde_json::from_str::<Value>(&body)
+            && let Some(Value::String(code)) = body_value.get("error_id")
             && let Some(error_code) = DocumentedErrorCode::from_numeric_code(code)
         {
             return Self::DocumentedError {
