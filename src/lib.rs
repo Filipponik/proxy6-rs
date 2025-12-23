@@ -10,6 +10,7 @@ pub mod error;
 pub(crate) mod method;
 pub mod params;
 pub mod response;
+pub mod value_object;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ClientBuildError {

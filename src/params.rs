@@ -1,3 +1,4 @@
+use crate::value_object::*;
 use std::{fmt::Display, net::IpAddr};
 
 pub(crate) trait ApiParams {
@@ -17,129 +18,6 @@ pub(crate) trait ApiParams {
             })
             .collect::<Vec<_>>()
             .join("&")
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ProxyPeriod(usize); // Enum needed here? example 30
-
-impl Display for ProxyPeriod {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Country(String); // 2 symbols
-
-impl Display for Country {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct PageLimit(u16); // 0 < limit <= 1000
-
-impl Display for PageLimit {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ProxyDescription(String); // <= 50 symbols
-
-impl Display for ProxyDescription {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ProxyId(String);
-
-impl Display for ProxyId {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ProxyString(String); // format: `ip:port:user:pass`
-
-impl Display for ProxyString {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum IpsToConnect {
-    Delete,
-    Connect(Vec<IpAddr>),
-}
-
-impl Display for IpsToConnect {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Delete => write!(f, "delete"),
-            Self::Connect(ips) => {
-                let ips = ips.iter().map(ToString::to_string).collect::<Vec<_>>();
-                write!(f, "{}", ips.join(","))
-            }
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ProxyType {
-    Http,
-    Socks5,
-}
-
-impl Display for ProxyType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Http => write!(f, "http"),
-            Self::Socks5 => write!(f, "socks"),
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum State {
-    Active,
-    Inactive,
-    Expiring,
-    All,
-}
-
-impl Display for State {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Active => write!(f, "active"),
-            Self::Inactive => write!(f, "inactive"),
-            Self::Expiring => write!(f, "expiring"),
-            Self::All => write!(f, "all"),
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ProxyVersion {
-    Ipv4,
-    Ipv6,
-    Ipv4Shared,
-}
-
-impl Display for ProxyVersion {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Ipv4 => write!(f, "4"),
-            Self::Ipv6 => write!(f, "6"),
-            Self::Ipv4Shared => write!(f, "3"),
-        }
     }
 }
 
@@ -375,7 +253,7 @@ mod tests {
     fn test_convert_full_get_price_to_query_string() {
         let request = GetPrice {
             count: 10,
-            period: ProxyPeriod(30),
+            period: ProxyPeriod::new(30).unwrap(),
             version: Some(ProxyVersion::Ipv6),
         };
 
@@ -386,7 +264,7 @@ mod tests {
     fn test_convert_minimal_get_price_to_query_string() {
         let request = GetPrice {
             count: 10,
-            period: ProxyPeriod(30),
+            period: ProxyPeriod::new(30).unwrap(),
             version: None,
         };
 
@@ -396,7 +274,7 @@ mod tests {
     #[test]
     fn test_convert_minimal_get_count_to_query_string() {
         let request = GetCount {
-            country: Country("uk".to_string()),
+            country: Country::new("uk").unwrap(),
             version: None,
         };
 
@@ -423,9 +301,9 @@ mod tests {
     fn test_convert_full_get_proxy_to_query_string() {
         let request = GetProxy {
             state: Some(State::Active),
-            description: Some(ProxyDescription("test_description".to_string())),
+            description: Some(ProxyDescription::new("test_description").unwrap()),
             page: Some(3),
-            limit: Some(PageLimit(10)),
+            limit: Some(PageLimit::new(10).unwrap()),
         };
 
         assert_eq!(
@@ -449,7 +327,7 @@ mod tests {
     #[test]
     fn test_convert_full_set_type_to_query_string() {
         let request = SetType {
-            ids: vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())],
+            ids: vec![ProxyId::new("id1"), ProxyId::new("id2")],
             r#type: ProxyType::Socks5,
         };
 
@@ -459,9 +337,9 @@ mod tests {
     #[test]
     fn test_convert_full_set_description_to_query_string() {
         let request = SetDescription {
-            new: ProxyDescription("new_proxy_description".to_string()),
-            old: Some(ProxyDescription("old_proxy_description".to_string())),
-            ids: Some(vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())]),
+            new: ProxyDescription::new("new_proxy_description").unwrap(),
+            old: Some(ProxyDescription::new("old_proxy_description").unwrap()),
+            ids: Some(vec![ProxyId::new("id1"), ProxyId::new("id2")]),
         };
 
         assert_eq!(
@@ -473,7 +351,7 @@ mod tests {
     #[test]
     fn test_convert_minimal_set_description_to_query_string() {
         let request = SetDescription {
-            new: ProxyDescription("new_proxy_description".to_string()),
+            new: ProxyDescription::new("new_proxy_description").unwrap(),
             old: None,
             ids: None,
         };
@@ -485,11 +363,11 @@ mod tests {
     fn test_convert_full_buy_to_query_string() {
         let request = Buy {
             count: 100,
-            period: ProxyPeriod(30),
-            country: Country("us".to_string()),
+            period: ProxyPeriod::new(30).unwrap(),
+            country: Country::new("us").unwrap(),
             version: Some(ProxyVersion::Ipv6),
             r#type: Some(ProxyType::Http),
-            description: Some(ProxyDescription("new_proxy_description".to_string())),
+            description: Some(ProxyDescription::new("new_proxy_description").unwrap()),
             auto_prolong: true,
         };
 
@@ -503,8 +381,8 @@ mod tests {
     fn test_convert_minimal_buy_to_query_string() {
         let request = Buy {
             count: 100,
-            period: ProxyPeriod(30),
-            country: Country("us".to_string()),
+            period: ProxyPeriod::new(30).unwrap(),
+            country: Country::new("us").unwrap(),
             version: None,
             r#type: None,
             description: None,
@@ -517,8 +395,8 @@ mod tests {
     #[test]
     fn test_convert_full_prolong_to_query_string() {
         let request = Prolong {
-            period: ProxyPeriod(30),
-            ids: vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())],
+            period: ProxyPeriod::new(30).unwrap(),
+            ids: vec![ProxyId::new("id1"), ProxyId::new("id2")],
         };
 
         assert_eq!(request.to_query_string(), "period=30&ids=id1,id2");
@@ -527,8 +405,8 @@ mod tests {
     #[test]
     fn test_convert_full_delete_to_query_string() {
         let request = Delete {
-            ids: Some(vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())]),
-            description: Some(ProxyDescription("new_proxy_description".to_string())),
+            ids: Some(vec![ProxyId::new("id1"), ProxyId::new("id2")]),
+            description: Some(ProxyDescription::new("new_proxy_description").unwrap()),
         };
 
         assert_eq!(
@@ -550,11 +428,14 @@ mod tests {
     #[test]
     fn test_convert_full_check_to_query_string() {
         let request = Check {
-            ids: Some(vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())]),
-            proxy_string: Some(ProxyString("proxy_string".to_string())),
+            ids: Some(vec![ProxyId::new("id1"), ProxyId::new("id2")]),
+            proxy_string: Some(ProxyString::new("127.0.0.1:8080:user:pass").unwrap()),
         };
 
-        assert_eq!(request.to_query_string(), "ids=id1,id2&proxy=proxy_string");
+        assert_eq!(
+            request.to_query_string(),
+            "ids=id1,id2&proxy=127.0.0.1:8080:user:pass"
+        );
     }
 
     #[test]
