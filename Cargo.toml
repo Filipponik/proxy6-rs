@@ -2,6 +2,13 @@
 name = "proxy6-rs"
 version = "0.1.0"
 edition = "2024"
+authors = ["Filipponik"]
+description = "Proxy6 Rust API wrapper"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/Filipponik/proxy6-rs"
+keywords = ["proxy6", "proxy6.net", "px6.me", "api", "wrapper", "sdk"]
+categories = ["web-programming", "api-bindings"]
 
 [lib]
 name = "proxy6"
@@ -16,3 +23,13 @@ thiserror = "2.0.17"
 [dev-dependencies]
 mockito = "1.7.0"
 tokio = { version = "1.32.0", features = ["full"] }
+
+[lints.clippy]
+pedantic = "warn"
+nursery = "warn"
+unwrap_used = "warn"
+expect_used = "warn"
+panic = "warn"
+missing_panics_doc = "warn"
+panic_in_result_fn = "warn"
+cargo_common_metadata = "warn"
