@@ -1,4 +1,4 @@
-#![allow(dead_code, unused)]
+#![allow(dead_code, unused, clippy::needless_pass_by_value)]
 
 use reqwest::{Error, Response};
 
