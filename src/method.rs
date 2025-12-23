@@ -18,19 +18,19 @@ pub enum ApiMethod {
 }
 
 impl ApiMethod {
-    pub fn get_params(&self) -> Box<&dyn params::ApiParams> {
+    pub fn get_params(&self) -> &dyn params::ApiParams {
         match self {
-            Self::GetPrice(params) => Box::new(params),
-            Self::GetCount(params) => Box::new(params),
-            Self::GetCountry(params) => Box::new(params),
-            Self::GetProxy(params) => Box::new(params),
-            Self::SetType(params) => Box::new(params),
-            Self::SetDescription(params) => Box::new(params),
-            Self::Buy(params) => Box::new(params),
-            Self::Prolong(params) => Box::new(params),
-            Self::Delete(params) => Box::new(params),
-            Self::Check(params) => Box::new(params),
-            Self::IpAuth(params) => Box::new(params),
+            Self::GetPrice(params) => params,
+            Self::GetCount(params) => params,
+            Self::GetCountry(params) => params,
+            Self::GetProxy(params) => params,
+            Self::SetType(params) => params,
+            Self::SetDescription(params) => params,
+            Self::Buy(params) => params,
+            Self::Prolong(params) => params,
+            Self::Delete(params) => params,
+            Self::Check(params) => params,
+            Self::IpAuth(params) => params,
         }
     }
 }
