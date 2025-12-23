@@ -3,7 +3,7 @@ use std::fmt::Display;
 use crate::params;
 
 #[derive(Debug, Clone)]
-pub(crate) enum ApiMethod {
+pub enum ApiMethod {
     GetPrice(params::GetPrice),
     GetCount(params::GetCount),
     GetCountry(params::GetCountry),
@@ -18,19 +18,19 @@ pub(crate) enum ApiMethod {
 }
 
 impl ApiMethod {
-    pub(crate) fn get_params(self) -> Box<dyn params::ApiParams> {
+    pub fn get_params(&self) -> Box<&dyn params::ApiParams> {
         match self {
-            ApiMethod::GetPrice(params) => Box::new(params),
-            ApiMethod::GetCount(params) => Box::new(params),
-            ApiMethod::GetCountry(params) => Box::new(params),
-            ApiMethod::GetProxy(params) => Box::new(params),
-            ApiMethod::SetType(params) => Box::new(params),
-            ApiMethod::SetDescription(params) => Box::new(params),
-            ApiMethod::Buy(params) => Box::new(params),
-            ApiMethod::Prolong(params) => Box::new(params),
-            ApiMethod::Delete(params) => Box::new(params),
-            ApiMethod::Check(params) => Box::new(params),
-            ApiMethod::IpAuth(params) => Box::new(params),
+            Self::GetPrice(params) => Box::new(params),
+            Self::GetCount(params) => Box::new(params),
+            Self::GetCountry(params) => Box::new(params),
+            Self::GetProxy(params) => Box::new(params),
+            Self::SetType(params) => Box::new(params),
+            Self::SetDescription(params) => Box::new(params),
+            Self::Buy(params) => Box::new(params),
+            Self::Prolong(params) => Box::new(params),
+            Self::Delete(params) => Box::new(params),
+            Self::Check(params) => Box::new(params),
+            Self::IpAuth(params) => Box::new(params),
         }
     }
 }
@@ -38,17 +38,17 @@ impl ApiMethod {
 impl Display for ApiMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ApiMethod::GetPrice(_) => "getprice",
-            ApiMethod::GetCount(_) => "getcount",
-            ApiMethod::GetCountry(_) => "getcountry",
-            ApiMethod::GetProxy(_) => "getproxy",
-            ApiMethod::SetType(_) => "settype",
-            ApiMethod::SetDescription(_) => "setdescr",
-            ApiMethod::Buy(_) => "buy",
-            ApiMethod::Prolong(_) => "prolong",
-            ApiMethod::Delete(_) => "delete",
-            ApiMethod::Check(_) => "check",
-            ApiMethod::IpAuth(_) => "ipauth",
+            Self::GetPrice(_) => "getprice",
+            Self::GetCount(_) => "getcount",
+            Self::GetCountry(_) => "getcountry",
+            Self::GetProxy(_) => "getproxy",
+            Self::SetType(_) => "settype",
+            Self::SetDescription(_) => "setdescr",
+            Self::Buy(_) => "buy",
+            Self::Prolong(_) => "prolong",
+            Self::Delete(_) => "delete",
+            Self::Check(_) => "check",
+            Self::IpAuth(_) => "ipauth",
         }
         .fmt(f)
     }

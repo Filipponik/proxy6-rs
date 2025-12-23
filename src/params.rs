@@ -7,15 +7,13 @@ pub(crate) trait ApiParams {
         self.to_query_tuple()
             .into_iter()
             .filter_map(|(key, maybe_value)| {
-                let Some(value) = maybe_value else {
-                    return None;
-                };
+                let value = maybe_value?;
 
                 if value.is_empty() {
                     return Some(key.to_string());
                 }
 
-                Some(format!("{}={}", key, value))
+                Some(format!("{key}={value}"))
             })
             .collect::<Vec<_>>()
             .join("&");
@@ -87,9 +85,9 @@ pub enum IpsToConnect {
 impl Display for IpsToConnect {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            IpsToConnect::Delete => write!(f, "delete"),
-            IpsToConnect::Connect(ips) => {
-                let ips = ips.iter().map(|ip| ip.to_string()).collect::<Vec<_>>();
+            Self::Delete => write!(f, "delete"),
+            Self::Connect(ips) => {
+                let ips = ips.iter().map(ToString::to_string).collect::<Vec<_>>();
                 write!(f, "{}", ips.join(","))
             }
         }
@@ -105,8 +103,8 @@ pub enum ProxyType {
 impl Display for ProxyType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ProxyType::Http => write!(f, "http"),
-            ProxyType::Socks5 => write!(f, "socks"),
+            Self::Http => write!(f, "http"),
+            Self::Socks5 => write!(f, "socks"),
         }
     }
 }
@@ -140,9 +138,9 @@ pub enum ProxyVersion {
 impl Display for ProxyVersion {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ProxyVersion::Ipv4 => write!(f, "4"),
-            ProxyVersion::Ipv6 => write!(f, "6"),
-            ProxyVersion::Ipv4Shared => write!(f, "3"),
+            Self::Ipv4 => write!(f, "4"),
+            Self::Ipv6 => write!(f, "6"),
+            Self::Ipv4Shared => write!(f, "3"),
         }
     }
 }
@@ -159,7 +157,7 @@ impl ApiParams for GetPrice {
         vec![
             ("count", Some(self.count.to_string())),
             ("period", Some(self.period.to_string())),
-            ("version", self.version.as_ref().map(|v| v.to_string())),
+            ("version", self.version.as_ref().map(ToString::to_string)),
         ]
     }
 }
@@ -174,7 +172,7 @@ impl ApiParams for GetCount {
     fn to_query_tuple(&self) -> Vec<(&str, Option<String>)> {
         vec![
             ("country", Some(self.country.to_string())),
-            ("version", self.version.as_ref().map(|v| v.to_string())),
+            ("version", self.version.as_ref().map(ToString::to_string)),
         ]
     }
 }
@@ -186,7 +184,7 @@ pub struct GetCountry {
 
 impl ApiParams for GetCountry {
     fn to_query_tuple(&self) -> Vec<(&str, Option<String>)> {
-        vec![("version", self.version.as_ref().map(|v| v.to_string()))]
+        vec![("version", self.version.as_ref().map(ToString::to_string))]
     }
 }
 
@@ -201,13 +199,13 @@ pub struct GetProxy {
 impl ApiParams for GetProxy {
     fn to_query_tuple(&self) -> Vec<(&str, Option<String>)> {
         vec![
-            ("state", self.state.as_ref().map(|s| s.to_string())),
+            ("state", self.state.as_ref().map(ToString::to_string)),
             (
                 "description",
-                self.description.as_ref().map(|d| d.to_string()),
+                self.description.as_ref().map(ToString::to_string),
             ),
-            ("page", self.page.map(|p| p.to_string())),
-            ("limit", self.limit.as_ref().map(|l| l.to_string())),
+            ("page", self.page.map(|page| page.to_string())),
+            ("limit", self.limit.as_ref().map(ToString::to_string)),
         ]
     }
 }
@@ -226,7 +224,7 @@ impl ApiParams for SetType {
                 Some(
                     self.ids
                         .iter()
-                        .map(|x| x.to_string())
+                        .map(ToString::to_string)
                         .collect::<Vec<_>>()
                         .join(","),
                 ),
@@ -247,12 +245,12 @@ impl ApiParams for SetDescription {
     fn to_query_tuple(&self) -> Vec<(&str, Option<String>)> {
         vec![
             ("new", Some(self.new.to_string())),
-            ("old", self.old.as_ref().map(|old| old.to_string())),
+            ("old", self.old.as_ref().map(ToString::to_string)),
             (
                 "ids",
                 self.ids.as_ref().map(|ids| {
                     ids.iter()
-                        .map(|x| x.to_string())
+                        .map(ToString::to_string)
                         .collect::<Vec<_>>()
                         .join(",")
                 }),
@@ -275,7 +273,7 @@ impl ApiParams for SetCountry {
                 Some(
                     self.ids
                         .iter()
-                        .map(|x| x.to_string())
+                        .map(ToString::to_string)
                         .collect::<Vec<_>>()
                         .join(","),
                 ),
@@ -302,11 +300,11 @@ impl ApiParams for Buy {
             ("count", Some(self.count.to_string())),
             ("period", Some(self.period.to_string())),
             ("country", Some(self.country.to_string())),
-            ("version", self.version.as_ref().map(|x| x.to_string())),
-            ("type", self.r#type.as_ref().map(|x| x.to_string())),
+            ("version", self.version.as_ref().map(ToString::to_string)),
+            ("type", self.r#type.as_ref().map(ToString::to_string)),
             (
                 "description",
-                self.description.as_ref().map(|x| x.to_string()),
+                self.description.as_ref().map(ToString::to_string),
             ),
             ("auto_prolong", Some(self.auto_prolong.to_string())),
         ]
@@ -328,7 +326,7 @@ impl ApiParams for Prolong {
                 Some(
                     self.ids
                         .iter()
-                        .map(|x| x.to_string())
+                        .map(ToString::to_string)
                         .collect::<Vec<_>>()
                         .join(","),
                 ),
@@ -350,14 +348,14 @@ impl ApiParams for Delete {
                 "ids",
                 self.ids.as_ref().map(|ids| {
                     ids.iter()
-                        .map(|x| x.to_string())
+                        .map(ToString::to_string)
                         .collect::<Vec<_>>()
                         .join(",")
                 }),
             ),
             (
                 "description",
-                self.description.as_ref().map(|x| x.to_string()),
+                self.description.as_ref().map(ToString::to_string),
             ),
         ]
     }
@@ -376,14 +374,14 @@ impl ApiParams for Check {
                 "ids",
                 self.ids.as_ref().map(|ids| {
                     ids.iter()
-                        .map(|x| x.to_string())
+                        .map(ToString::to_string)
                         .collect::<Vec<_>>()
                         .join(",")
                 }),
             ),
             (
                 "proxy_string",
-                self.proxy_string.as_ref().map(|x| x.to_string()),
+                self.proxy_string.as_ref().map(ToString::to_string),
             ),
         ]
     }

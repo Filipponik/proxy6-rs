@@ -7,9 +7,9 @@ use crate::method::ApiMethod;
 const DEFAULT_BASE_URL: &str = "https://px6.link";
 
 pub mod error;
-mod method;
-mod params;
-mod response;
+pub(crate) mod method;
+pub mod params;
+pub mod response;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ClientBuildError {
@@ -73,13 +73,13 @@ impl Client {
 
     async fn get_request_with_params<TResponse>(
         &self,
-        method: method::ApiMethod,
+        method: &method::ApiMethod,
     ) -> Result<TResponse, error::ApiError> {
         let url = format!(
             "{}/api/{}/{}?{}",
             self.base_url,
             self.api_key,
-            method.to_string(),
+            method,
             method.get_params().to_query_string()
         );
 
