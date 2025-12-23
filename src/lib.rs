@@ -2,6 +2,8 @@
 
 use reqwest::{Error, Response};
 
+use crate::method::ApiMethod;
+
 const DEFAULT_BASE_URL: &str = "https://px6.link";
 
 pub mod error;
@@ -69,17 +71,16 @@ impl Client {
         ClientBuilder::new()
     }
 
-    async fn get_request_with_params<TParams: params::ApiParams, TResponse>(
+    async fn get_request_with_params<TResponse>(
         &self,
-        method: &method::ApiMethod,
-        params: &TParams,
+        method: method::ApiMethod,
     ) -> Result<TResponse, error::ApiError> {
         let url = format!(
             "{}/api/{}/{}?{}",
             self.base_url,
             self.api_key,
-            method,
-            params.to_query_string()
+            method.to_string(),
+            method.get_params().to_query_string()
         );
 
         let response = self.requester.get(url).send().await;
@@ -108,43 +109,63 @@ impl Client {
         }
     }
 
-    pub fn get_price(&self) {
+    pub fn get_price(&self, params: params::GetPrice) {
+        // self.get_request_with_params(ApiMethod::GetPrice(params));
+
         unimplemented!();
     }
 
-    pub fn get_count(&self) {
+    pub fn get_count(&self, params: params::GetCount) {
+        // self.get_request_with_params(ApiMethod::GetCount(params));
+
         unimplemented!();
     }
 
-    pub fn get_country(&self) {
+    pub fn get_country(&self, params: params::GetCountry) {
+        // self.get_request_with_params(ApiMethod::GetCountry(params));
+
         unimplemented!();
     }
 
-    pub fn get_proxy(&self) {
+    pub fn get_proxy(&self, params: params::GetProxy) {
+        // self.get_request_with_params(ApiMethod::GetProxy(params));
+
         unimplemented!();
     }
 
-    pub fn set_type(&self) {
+    pub fn set_type(&self, params: params::SetType) {
+        // self.get_request_with_params(ApiMethod::SetType(params));
+
         unimplemented!();
     }
 
-    pub fn set_description(&self) {
+    pub fn set_description(&self, params: params::SetDescription) {
+        // self.get_request_with_params(ApiMethod::SetDescription(params));
+
         unimplemented!();
     }
 
-    pub fn buy(&self) {
+    pub fn buy(&self, params: params::Buy) {
+        // self.get_request_with_params(ApiMethod::Buy(params));
+
         unimplemented!();
     }
 
-    pub fn prolong(&self) {
+    pub fn prolong(&self, params: params::Prolong) {
+        // self.get_request_with_params(ApiMethod::Prolong(params));
+
         unimplemented!();
     }
 
-    pub fn delete(&self) {
+    pub fn delete(&self, params: params::Delete) {
+        // self.get_request_with_params(ApiMethod::Delete(params));
+
         unimplemented!();
     }
 
-    pub fn check(&self) {
+    pub fn check(&self, params: params::Check) {
+        // self.get_request_with_params(ApiMethod::Check(params));
+
         unimplemented!();
     }
 }
