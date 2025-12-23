@@ -22,7 +22,11 @@ type Result<T> = std::result::Result<T, BuildError>;
 pub struct ProxyPeriod(usize); // Enum needed here? example 30
 
 impl ProxyPeriod {
-    pub fn new(period: usize) -> Result<Self> {
+    /// Create a new `ProxyPeriod` instance.
+    ///
+    /// # Errors
+    /// - [`BuildError::ProxyPeriodTooLow`] if period is zero.
+    pub const fn new(period: usize) -> Result<Self> {
         if period == 0 {
             Err(BuildError::ProxyPeriodTooLow)
         } else {
@@ -41,12 +45,16 @@ impl Display for ProxyPeriod {
 pub struct Country(String);
 
 impl Country {
+    /// Create a new `Country` instance.
+    ///
+    /// # Errors
+    /// - [`BuildError::CountryMustBeIso2`] if the provided ISO 2-letter code is not valid.
     pub fn new(iso2: impl Into<String>) -> Result<Self> {
         let iso2 = iso2.into();
-        if iso2.len() != 2 {
-            Err(BuildError::CountryMustBeIso2)
-        } else {
+        if iso2.len() == 2 {
             Ok(Self(iso2.to_lowercase()))
+        } else {
+            Err(BuildError::CountryMustBeIso2)
         }
     }
 }
@@ -61,7 +69,12 @@ impl Display for Country {
 pub struct PageLimit(u16);
 
 impl PageLimit {
-    pub fn new(limit: u16) -> Result<Self> {
+    /// Create a new `PageLimit` instance.
+    ///
+    /// # Errors
+    /// - [`BuildError::PageLimitTooLow`] if limit is zero.
+    /// - [`BuildError::PageLimitTooHigh`] if limit exceeds 1000.
+    pub const fn new(limit: u16) -> Result<Self> {
         if limit == 0 {
             Err(BuildError::PageLimitTooLow)
         } else if limit > 1000 {
@@ -82,6 +95,10 @@ impl Display for PageLimit {
 pub struct ProxyDescription(String);
 
 impl ProxyDescription {
+    /// Create a new `ProxyDescription` instance.
+    ///
+    /// # Errors
+    /// - [`BuildError::ProxyDescriptionTooLong`] if the description is longer than 50 characters.
     pub fn new(description: impl Into<String>) -> Result<Self> {
         let description = description.into();
         if description.len() > 50 {
@@ -117,9 +134,16 @@ impl Display for ProxyId {
 pub struct ProxyString(String);
 
 impl ProxyString {
+    /// Create a new `ProxyString` instance.
+    ///
+    /// # Errors
+    /// - [`BuildError::ProxyStringIncorrectFormat`] if the proxy string is not in the correct format:
+    ///     - `ip:port:user:pass`;
+    ///     - ip must be ip address;
+    ///     - port must be u16;
+    ///     - user and pass must not be empty.
     pub fn new(proxy_string: impl Into<String>) -> Result<Self> {
         let proxy_string = proxy_string.into();
-        // check format ip:port:user:pass
 
         let parts: Vec<&str> = proxy_string.split(':').collect();
         if parts.len() != 4 {
@@ -225,7 +249,8 @@ impl Display for ProxyVersion {
 pub struct Port(u16);
 
 impl Port {
-    pub fn new(port: u16) -> Self {
+    #[must_use]
+    pub const fn new(port: u16) -> Self {
         Self(port)
     }
 }
@@ -233,7 +258,8 @@ impl Port {
 pub struct Username(String);
 
 impl Username {
-    pub fn new(username: String) -> Self {
+    #[must_use]
+    pub const fn new(username: String) -> Self {
         Self(username)
     }
 }
@@ -241,7 +267,8 @@ impl Username {
 pub struct Password(String);
 
 impl Password {
-    pub fn new(password: String) -> Self {
+    #[must_use]
+    pub const fn new(password: String) -> Self {
         Self(password)
     }
 }

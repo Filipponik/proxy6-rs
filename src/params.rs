@@ -1,3 +1,4 @@
+#[allow(clippy::wildcard_imports)]
 use crate::value_object::*;
 use std::{fmt::Display, net::IpAddr};
 
@@ -155,7 +156,7 @@ impl ApiParams for Buy {
             (
                 "auto_prolong",
                 if self.auto_prolong {
-                    Some("".to_string())
+                    Some(String::new())
                 } else {
                     None
                 },
