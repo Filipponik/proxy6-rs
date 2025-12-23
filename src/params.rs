@@ -16,9 +16,7 @@ pub(crate) trait ApiParams {
                 Some(format!("{key}={value}"))
             })
             .collect::<Vec<_>>()
-            .join("&");
-
-        String::new()
+            .join("&")
     }
 }
 
@@ -306,7 +304,14 @@ impl ApiParams for Buy {
                 "description",
                 self.description.as_ref().map(ToString::to_string),
             ),
-            ("auto_prolong", Some(self.auto_prolong.to_string())),
+            (
+                "auto_prolong",
+                if self.auto_prolong {
+                    Some("".to_string())
+                } else {
+                    None
+                },
+            ),
         ]
     }
 }
@@ -379,10 +384,7 @@ impl ApiParams for Check {
                         .join(",")
                 }),
             ),
-            (
-                "proxy_string",
-                self.proxy_string.as_ref().map(ToString::to_string),
-            ),
+            ("proxy", self.proxy_string.as_ref().map(ToString::to_string)),
         ]
     }
 }
@@ -395,5 +397,237 @@ pub struct IpAuth {
 impl ApiParams for IpAuth {
     fn to_query_tuple(&self) -> Vec<(&str, Option<String>)> {
         vec![("ip", Some(self.ip.to_string()))]
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_convert_full_get_price_to_query_string() {
+        let request = GetPrice {
+            count: 10,
+            period: ProxyPeriod(30),
+            version: Some(ProxyVersion::Ipv6),
+        };
+
+        assert_eq!(request.to_query_string(), "count=10&period=30&version=6");
+    }
+
+    #[test]
+    fn test_convert_minimal_get_price_to_query_string() {
+        let request = GetPrice {
+            count: 10,
+            period: ProxyPeriod(30),
+            version: None,
+        };
+
+        assert_eq!(request.to_query_string(), "count=10&period=30");
+    }
+
+    #[test]
+    fn test_convert_minimal_get_count_to_query_string() {
+        let request = GetCount {
+            country: Country("uk".to_string()),
+            version: None,
+        };
+
+        assert_eq!(request.to_query_string(), "country=uk");
+    }
+
+    #[test]
+    fn test_convert_full_get_country_to_query_string() {
+        let request = GetCountry {
+            version: Some(ProxyVersion::Ipv6),
+        };
+
+        assert_eq!(request.to_query_string(), "version=6");
+    }
+
+    #[test]
+    fn test_convert_minimal_get_country_to_query_string() {
+        let request = GetCountry { version: None };
+
+        assert_eq!(request.to_query_string(), "");
+    }
+
+    #[test]
+    fn test_convert_full_get_proxy_to_query_string() {
+        let request = GetProxy {
+            state: Some(State::Active),
+            description: Some(ProxyDescription("test_description".to_string())),
+            page: Some(3),
+            limit: Some(PageLimit(10)),
+        };
+
+        assert_eq!(
+            request.to_query_string(),
+            "state=active&description=test_description&page=3&limit=10"
+        );
+    }
+
+    #[test]
+    fn test_convert_minimal_get_proxy_to_query_string() {
+        let request = GetProxy {
+            state: None,
+            description: None,
+            page: None,
+            limit: None,
+        };
+
+        assert_eq!(request.to_query_string(), "");
+    }
+
+    #[test]
+    fn test_convert_full_set_type_to_query_string() {
+        let request = SetType {
+            ids: vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())],
+            r#type: ProxyType::Socks5,
+        };
+
+        assert_eq!(request.to_query_string(), "ids=id1,id2&type=socks");
+    }
+
+    #[test]
+    fn test_convert_full_set_description_to_query_string() {
+        let request = SetDescription {
+            new: ProxyDescription("new_proxy_description".to_string()),
+            old: Some(ProxyDescription("old_proxy_description".to_string())),
+            ids: Some(vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())]),
+        };
+
+        assert_eq!(
+            request.to_query_string(),
+            "new=new_proxy_description&old=old_proxy_description&ids=id1,id2"
+        );
+    }
+
+    #[test]
+    fn test_convert_minimal_set_description_to_query_string() {
+        let request = SetDescription {
+            new: ProxyDescription("new_proxy_description".to_string()),
+            old: None,
+            ids: None,
+        };
+
+        assert_eq!(request.to_query_string(), "new=new_proxy_description");
+    }
+
+    #[test]
+    fn test_convert_full_set_country_to_query_string() {
+        let request = SetCountry {
+            ids: vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())],
+            country: Country("us".to_string()),
+        };
+
+        assert_eq!(request.to_query_string(), "ids=id1,id2&country=us");
+    }
+
+    #[test]
+    fn test_convert_full_buy_to_query_string() {
+        let request = Buy {
+            count: 100,
+            period: ProxyPeriod(30),
+            country: Country("us".to_string()),
+            version: Some(ProxyVersion::Ipv6),
+            r#type: Some(ProxyType::Http),
+            description: Some(ProxyDescription("new_proxy_description".to_string())),
+            auto_prolong: true,
+        };
+
+        assert_eq!(
+            request.to_query_string(),
+            "count=100&period=30&country=us&version=6&type=http&description=new_proxy_description&auto_prolong"
+        );
+    }
+
+    #[test]
+    fn test_convert_minimal_buy_to_query_string() {
+        let request = Buy {
+            count: 100,
+            period: ProxyPeriod(30),
+            country: Country("us".to_string()),
+            version: None,
+            r#type: None,
+            description: None,
+            auto_prolong: false,
+        };
+
+        assert_eq!(request.to_query_string(), "count=100&period=30&country=us");
+    }
+
+    #[test]
+    fn test_convert_full_prolong_to_query_string() {
+        let request = Prolong {
+            period: ProxyPeriod(30),
+            ids: vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())],
+        };
+
+        assert_eq!(request.to_query_string(), "period=30&ids=id1,id2");
+    }
+
+    #[test]
+    fn test_convert_full_delete_to_query_string() {
+        let request = Delete {
+            ids: Some(vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())]),
+            description: Some(ProxyDescription("new_proxy_description".to_string())),
+        };
+
+        assert_eq!(
+            request.to_query_string(),
+            "ids=id1,id2&description=new_proxy_description"
+        );
+    }
+
+    #[test]
+    fn test_convert_minimal_delete_to_query_string() {
+        let request = Delete {
+            ids: None,
+            description: None,
+        };
+
+        assert_eq!(request.to_query_string(), "");
+    }
+
+    #[test]
+    fn test_convert_full_check_to_query_string() {
+        let request = Check {
+            ids: Some(vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())]),
+            proxy_string: Some(ProxyString("proxy_string".to_string())),
+        };
+
+        assert_eq!(request.to_query_string(), "ids=id1,id2&proxy=proxy_string");
+    }
+
+    #[test]
+    fn test_convert_minimal_check_to_query_string() {
+        let request = Check {
+            ids: None,
+            proxy_string: None,
+        };
+
+        assert_eq!(request.to_query_string(), "");
+    }
+
+    #[test]
+    fn test_convert_delete_ip_auth_to_query_string() {
+        let request = IpAuth {
+            ip: IpsToConnect::Delete,
+        };
+
+        assert_eq!(request.to_query_string(), "ip=delete");
+    }
+
+    #[test]
+    fn test_convert_select_ip_auth_to_query_string() {
+        let request = IpAuth {
+            ip: IpsToConnect::Connect(vec![
+                "127.0.0.1".parse().unwrap(),
+                "127.0.0.2".parse().unwrap(),
+            ]),
+        };
+
+        assert_eq!(request.to_query_string(), "ip=127.0.0.1,127.0.0.2");
     }
 }
