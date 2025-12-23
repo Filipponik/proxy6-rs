@@ -198,10 +198,7 @@ impl ApiParams for GetProxy {
     fn to_query_tuple(&self) -> Vec<(&str, Option<String>)> {
         vec![
             ("state", self.state.as_ref().map(ToString::to_string)),
-            (
-                "description",
-                self.description.as_ref().map(ToString::to_string),
-            ),
+            ("descr", self.description.as_ref().map(ToString::to_string)),
             ("page", self.page.map(|page| page.to_string())),
             ("limit", self.limit.as_ref().map(ToString::to_string)),
         ]
@@ -258,30 +255,6 @@ impl ApiParams for SetDescription {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct SetCountry {
-    ids: Vec<ProxyId>,
-    country: Country,
-}
-
-impl ApiParams for SetCountry {
-    fn to_query_tuple(&self) -> Vec<(&str, Option<String>)> {
-        vec![
-            (
-                "ids",
-                Some(
-                    self.ids
-                        .iter()
-                        .map(ToString::to_string)
-                        .collect::<Vec<_>>()
-                        .join(","),
-                ),
-            ),
-            ("country", Some(self.country.to_string())),
-        ]
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Buy {
     count: usize,
     period: ProxyPeriod,
@@ -300,10 +273,7 @@ impl ApiParams for Buy {
             ("country", Some(self.country.to_string())),
             ("version", self.version.as_ref().map(ToString::to_string)),
             ("type", self.r#type.as_ref().map(ToString::to_string)),
-            (
-                "description",
-                self.description.as_ref().map(ToString::to_string),
-            ),
+            ("descr", self.description.as_ref().map(ToString::to_string)),
             (
                 "auto_prolong",
                 if self.auto_prolong {
@@ -358,10 +328,7 @@ impl ApiParams for Delete {
                         .join(",")
                 }),
             ),
-            (
-                "description",
-                self.description.as_ref().map(ToString::to_string),
-            ),
+            ("descr", self.description.as_ref().map(ToString::to_string)),
         ]
     }
 }
@@ -463,7 +430,7 @@ mod tests {
 
         assert_eq!(
             request.to_query_string(),
-            "state=active&description=test_description&page=3&limit=10"
+            "state=active&descr=test_description&page=3&limit=10"
         );
     }
 
@@ -515,16 +482,6 @@ mod tests {
     }
 
     #[test]
-    fn test_convert_full_set_country_to_query_string() {
-        let request = SetCountry {
-            ids: vec![ProxyId("id1".to_string()), ProxyId("id2".to_string())],
-            country: Country("us".to_string()),
-        };
-
-        assert_eq!(request.to_query_string(), "ids=id1,id2&country=us");
-    }
-
-    #[test]
     fn test_convert_full_buy_to_query_string() {
         let request = Buy {
             count: 100,
@@ -538,7 +495,7 @@ mod tests {
 
         assert_eq!(
             request.to_query_string(),
-            "count=100&period=30&country=us&version=6&type=http&description=new_proxy_description&auto_prolong"
+            "count=100&period=30&country=us&version=6&type=http&descr=new_proxy_description&auto_prolong"
         );
     }
 
@@ -576,7 +533,7 @@ mod tests {
 
         assert_eq!(
             request.to_query_string(),
-            "ids=id1,id2&description=new_proxy_description"
+            "ids=id1,id2&descr=new_proxy_description"
         );
     }
 
