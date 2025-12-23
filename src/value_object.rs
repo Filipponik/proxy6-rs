@@ -221,3 +221,44 @@ impl Display for ProxyVersion {
         }
     }
 }
+
+pub struct Port(u16);
+
+impl Port {
+    pub fn new(port: u16) -> Self {
+        Self(port)
+    }
+}
+
+pub struct Username(String);
+
+impl Username {
+    pub fn new(username: String) -> Self {
+        Self(username)
+    }
+}
+
+pub struct Password(String);
+
+impl Password {
+    pub fn new(password: String) -> Self {
+        Self(password)
+    }
+}
+
+pub struct Proxy {
+    pub id: ProxyId,
+    pub ip: IpAddr,
+    pub host: IpAddr,
+    pub port: Port,
+    pub user: Username,
+    pub password: Password,
+    pub r#type: ProxyType,
+    pub country: Country,
+    pub date: String,     // use chrono
+    pub date_end: String, // use chrono
+    pub unixtime: u64,
+    pub unixtime_end: u64,
+    pub description: ProxyDescription,
+    pub active: bool, // "1" or "0"
+}
