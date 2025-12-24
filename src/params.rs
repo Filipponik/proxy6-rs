@@ -68,7 +68,7 @@ impl ApiParams for GetCountry {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GetProxy {
-    state: Option<State>,
+    state: Option<ProxyStatus>,
     description: Option<ProxyDescription>,
     page: Option<usize>,
     limit: Option<PageLimit>,
@@ -304,7 +304,7 @@ mod tests {
     #[test]
     fn test_convert_full_get_proxy_to_query_string() {
         let request = GetProxy {
-            state: Some(State::Active),
+            state: Some(ProxyStatus::Active),
             description: Some(ProxyDescription::new("test_description").unwrap()),
             page: Some(3),
             limit: Some(PageLimit::new(10).unwrap()),

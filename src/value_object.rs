@@ -211,14 +211,14 @@ impl Display for ProxyType {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum State {
+pub enum ProxyStatus {
     Active,
     Inactive,
     Expiring,
     All,
 }
 
-impl Display for State {
+impl Display for ProxyStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Active => write!(f, "active"),
@@ -324,4 +324,22 @@ pub struct Proxy {
     pub unixtime_end: u64,
     pub description: ProxyDescription,
     pub active: bool, // "1" or "0"
+}
+
+pub struct Price(f64);
+
+impl Price {
+    #[must_use]
+    pub fn new(price: f64) -> Self {
+        Self(price)
+    }
+}
+
+pub struct OrderId(usize);
+
+impl OrderId {
+    #[must_use]
+    pub const fn new(id: usize) -> Self {
+        Self(id)
+    }
 }
