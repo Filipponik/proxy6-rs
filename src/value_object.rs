@@ -1,5 +1,7 @@
 use std::{fmt::Display, net::IpAddr};
 
+use serde::{Deserialize, Serialize};
+
 #[derive(Debug, thiserror::Error)]
 pub enum BuildError {
     #[error("Proxy period must be greater than zero")]
@@ -18,7 +20,7 @@ pub enum BuildError {
 
 type Result<T> = std::result::Result<T, BuildError>;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ProxyPeriod(usize); // Enum needed here? example 30
 
 impl ProxyPeriod {
@@ -41,7 +43,7 @@ impl Display for ProxyPeriod {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Country(String);
 
 impl Country {
@@ -65,7 +67,7 @@ impl Display for Country {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct PageLimit(u16);
 
 impl PageLimit {
@@ -91,7 +93,7 @@ impl Display for PageLimit {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ProxyDescription(String);
 
 impl ProxyDescription {
@@ -115,7 +117,7 @@ impl Display for ProxyDescription {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ProxyId(String);
 
 impl ProxyId {
@@ -130,7 +132,7 @@ impl Display for ProxyId {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ProxyString(String);
 
 impl ProxyString {
@@ -177,7 +179,7 @@ impl Display for ProxyString {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum IpsToConnect {
     Delete,
     Connect(Vec<IpAddr>),
@@ -195,7 +197,7 @@ impl Display for IpsToConnect {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ProxyType {
     Http,
     Socks5,
@@ -210,7 +212,7 @@ impl Display for ProxyType {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ProxyStatus {
     Active,
     Inactive,
@@ -229,7 +231,7 @@ impl Display for ProxyStatus {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ProxyVersion {
     Ipv4,
     Ipv6,
@@ -246,6 +248,7 @@ impl Display for ProxyVersion {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Port(u16);
 
 impl Port {
@@ -255,6 +258,7 @@ impl Port {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Username(String);
 
 impl Username {
@@ -264,6 +268,7 @@ impl Username {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Password(String);
 
 impl Password {
@@ -273,6 +278,7 @@ impl Password {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ResponseStatus(String);
 
 impl ResponseStatus {
@@ -282,6 +288,7 @@ impl ResponseStatus {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct UserId(String);
 
 impl UserId {
@@ -291,6 +298,7 @@ impl UserId {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct UserBalance(String);
 
 impl UserBalance {
@@ -300,6 +308,7 @@ impl UserBalance {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Currency(String);
 
 impl Currency {
@@ -309,6 +318,7 @@ impl Currency {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Proxy {
     pub id: ProxyId,
     pub ip: IpAddr,
@@ -326,6 +336,7 @@ pub struct Proxy {
     pub active: bool, // "1" or "0"
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Price(f64);
 
 impl Price {
@@ -335,6 +346,7 @@ impl Price {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct OrderId(usize);
 
 impl OrderId {

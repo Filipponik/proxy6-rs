@@ -1,17 +1,13 @@
-#![allow(dead_code, unused, clippy::needless_pass_by_value)]
-
-use reqwest::{Error, Response};
-
-use crate::method::ApiMethod;
+use crate::{method::ApiMethod, response::SuccessResponse};
 pub use error::*;
-pub use params::*;
+use serde::de::DeserializeOwned;
 pub use value_object::*;
 
 const DEFAULT_BASE_URL: &str = "https://px6.link";
 
 mod error;
 mod method;
-mod params;
+pub mod params;
 pub mod response;
 mod value_object;
 
@@ -84,7 +80,7 @@ impl Client {
         ClientBuilder::new()
     }
 
-    async fn get_request_with_params<TResponse>(
+    async fn get_request_with_params<TResponse: DeserializeOwned>(
         &self,
         method: &method::ApiMethod,
     ) -> Result<TResponse, error::ApiError> {
@@ -96,89 +92,148 @@ impl Client {
             method.get_params().to_query_string()
         );
 
-        let response = self.requester.get(url).send().await;
+        let response = self
+            .requester
+            .get(url)
+            .send()
+            .await
+            .map_err(|err| error::ApiError::ReqwestError { source: err })?;
 
-        match response {
-            Ok(value) => {
-                let response_status = value.status();
-                let response_text = value
-                    .text()
-                    .await
-                    .map_err(|err| error::ApiError::ReqwestError { source: err })?;
+        let response_status = response.status();
+        let response_text = response
+            .text()
+            .await
+            .map_err(|err| error::ApiError::ReqwestError { source: err })?;
 
-                if response_status == reqwest::StatusCode::TOO_MANY_REQUESTS {
-                    return Err(error::ApiError::TooManyRequests {
-                        response: response_text,
-                    });
-                }
-
-                if !response_status.is_success() {
-                    return Err(error::ApiError::parse_from_response_body(&response_text))?;
-                }
-
-                todo!();
-            }
-            Err(err) => Err(error::ApiError::ReqwestError { source: err }),
+        if response_status == reqwest::StatusCode::TOO_MANY_REQUESTS {
+            return Err(error::ApiError::TooManyRequests {
+                response: response_text,
+            });
         }
+
+        if !response_status.is_success() {
+            return Err(error::ApiError::parse_from_response_body(&response_text))?;
+        }
+
+        serde_json::from_str(&response_text).map_err(|err| error::ApiError::SuccessButCannotParse {
+            source: err,
+            response: response_text,
+        })
     }
 
-    pub fn get_price(&self, params: params::GetPrice) {
-        // self.get_request_with_params(ApiMethod::GetPrice(params));
-
-        unimplemented!();
+    /// Get information about the cost of the order, depending on the version, period and number of proxy.
+    ///
+    /// # Errors
+    /// Any error can be thrown (see [`error::ApiError`])
+    pub async fn get_price(
+        &self,
+        params: params::GetPrice,
+    ) -> Result<response::GetPrice, ApiError> {
+        self.get_request_with_params(&ApiMethod::GetPrice(params))
+            .await
     }
 
-    pub fn get_count(&self, params: params::GetCount) {
-        // self.get_request_with_params(ApiMethod::GetCount(params));
-
-        unimplemented!();
+    /// Get information on amount of proxies available to purchase for a selected country.
+    ///
+    /// # Errors
+    /// Any error can be thrown (see [`error::ApiError`])
+    pub async fn get_count(
+        &self,
+        params: params::GetCount,
+    ) -> Result<response::GetCount, ApiError> {
+        self.get_request_with_params(&ApiMethod::GetCount(params))
+            .await
     }
 
-    pub fn get_country(&self, params: params::GetCountry) {
-        // self.get_request_with_params(ApiMethod::GetCountry(params));
-
-        unimplemented!();
+    /// Get information on available for proxies purchase countries.
+    ///
+    /// # Errors
+    /// Any error can be thrown (see [`error::ApiError`])
+    pub async fn get_country(
+        &self,
+        params: params::GetCountry,
+    ) -> Result<response::GetCountry, ApiError> {
+        self.get_request_with_params(&ApiMethod::GetCountry(params))
+            .await
     }
 
-    pub fn get_proxy(&self, params: params::GetProxy) {
-        // self.get_request_with_params(ApiMethod::GetProxy(params));
-
-        unimplemented!();
+    /// Get the list of your proxies.
+    ///
+    /// # Errors
+    /// Any error can be thrown (see [`error::ApiError`])
+    pub async fn get_proxy(
+        &self,
+        params: params::GetProxy,
+    ) -> Result<response::GetProxy, ApiError> {
+        self.get_request_with_params(&ApiMethod::GetProxy(params))
+            .await
     }
 
-    pub fn set_type(&self, params: params::SetType) {
-        // self.get_request_with_params(ApiMethod::SetType(params));
-
-        unimplemented!();
+    /// Change the type (protocol) of your proxy.
+    ///
+    /// # Errors
+    /// Any error can be thrown (see [`error::ApiError`])
+    pub async fn set_type(
+        &self,
+        params: params::SetType,
+    ) -> Result<response::SuccessResponse, ApiError> {
+        self.get_request_with_params(&ApiMethod::SetType(params))
+            .await
     }
 
-    pub fn set_description(&self, params: params::SetDescription) {
-        // self.get_request_with_params(ApiMethod::SetDescription(params));
-
-        unimplemented!();
+    /// Update technical comments in the proxy list that was added when buying.
+    ///
+    /// # Errors
+    /// Any error can be thrown (see [`error::ApiError`])
+    pub async fn set_description(
+        &self,
+        params: params::SetDescription,
+    ) -> Result<response::SetDescription, ApiError> {
+        self.get_request_with_params(&ApiMethod::SetDescription(params))
+            .await
     }
 
-    pub fn buy(&self, params: params::Buy) {
-        // self.get_request_with_params(ApiMethod::Buy(params));
-
-        unimplemented!();
+    /// Purchase proxy.
+    ///
+    /// # Errors
+    /// Any error can be thrown (see [`error::ApiError`])
+    pub async fn buy(&self, params: params::Buy) -> Result<response::Buy, ApiError> {
+        self.get_request_with_params(&ApiMethod::Buy(params)).await
     }
 
-    pub fn prolong(&self, params: params::Prolong) {
-        // self.get_request_with_params(ApiMethod::Prolong(params));
-
-        unimplemented!();
+    /// Extend existing proxies.
+    ///
+    /// # Errors
+    /// Any error can be thrown (see [`error::ApiError`])
+    pub async fn prolong(&self, params: params::Prolong) -> Result<response::Prolong, ApiError> {
+        self.get_request_with_params(&ApiMethod::Prolong(params))
+            .await
     }
 
-    pub fn delete(&self, params: params::Delete) {
-        // self.get_request_with_params(ApiMethod::Delete(params));
-
-        unimplemented!();
+    /// Delete existing proxies.
+    ///
+    /// # Errors
+    /// Any error can be thrown (see [`error::ApiError`])
+    pub async fn delete(&self, params: params::Delete) -> Result<response::Delete, ApiError> {
+        self.get_request_with_params(&ApiMethod::Delete(params))
+            .await
     }
 
-    pub fn check(&self, params: params::Check) {
-        // self.get_request_with_params(ApiMethod::Check(params));
+    /// Check the validity of the proxy.
+    ///
+    /// # Errors
+    /// Any error can be thrown (see [`error::ApiError`])
+    pub async fn check(&self, params: params::Check) -> Result<response::Check, ApiError> {
+        self.get_request_with_params(&ApiMethod::Check(params))
+            .await
+    }
 
-        unimplemented!();
+    /// Attach or detach IP address auth from the proxy.
+    ///
+    /// # Errors
+    /// Any error can be thrown (see [`error::ApiError`])
+    pub async fn ip_auth(&self, params: params::IpAuth) -> Result<SuccessResponse, ApiError> {
+        self.get_request_with_params(&ApiMethod::IpAuth(params))
+            .await
     }
 }
