@@ -330,7 +330,7 @@ pub struct Price(f64);
 
 impl Price {
     #[must_use]
-    pub fn new(price: f64) -> Self {
+    pub const fn new(price: f64) -> Self {
         Self(price)
     }
 }

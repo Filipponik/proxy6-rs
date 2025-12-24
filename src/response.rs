@@ -1,3 +1,4 @@
+#[allow(clippy::wildcard_imports)]
 use crate::value_object::*;
 
 pub struct SuccessResponse {
