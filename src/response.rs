@@ -1,7 +1,4 @@
-pub struct ResponseStatus(String);
-pub struct UserId(String);
-pub struct UserBalance(String);
-pub struct Currency(String);
+use crate::value_object::{Currency, ResponseStatus, UserBalance, UserId};
 
 struct SuccessResponse {
     status: ResponseStatus,

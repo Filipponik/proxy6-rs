@@ -2,6 +2,7 @@
 use crate::value_object::*;
 use std::{fmt::Display, net::IpAddr};
 
+#[allow(clippy::redundant_pub_crate, reason = "`pub use` this module")]
 pub(crate) trait ApiParams {
     fn to_query_tuple(&self) -> Vec<(&str, Option<String>)>;
 

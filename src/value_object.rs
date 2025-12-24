@@ -273,6 +273,42 @@ impl Password {
     }
 }
 
+pub struct ResponseStatus(String);
+
+impl ResponseStatus {
+    #[must_use]
+    pub const fn new(status: String) -> Self {
+        Self(status)
+    }
+}
+
+pub struct UserId(String);
+
+impl UserId {
+    #[must_use]
+    pub const fn new(id: String) -> Self {
+        Self(id)
+    }
+}
+
+pub struct UserBalance(String);
+
+impl UserBalance {
+    #[must_use]
+    pub const fn new(balance: String) -> Self {
+        Self(balance)
+    }
+}
+
+pub struct Currency(String);
+
+impl Currency {
+    #[must_use]
+    pub const fn new(currency: String) -> Self {
+        Self(currency)
+    }
+}
+
 pub struct Proxy {
     pub id: ProxyId,
     pub ip: IpAddr,

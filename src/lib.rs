@@ -3,14 +3,17 @@
 use reqwest::{Error, Response};
 
 use crate::method::ApiMethod;
+pub use error::*;
+pub use params::*;
+pub use value_object::*;
 
 const DEFAULT_BASE_URL: &str = "https://px6.link";
 
-pub mod error;
-pub(crate) mod method;
-pub mod params;
+mod error;
+mod method;
+mod params;
 pub mod response;
-pub mod value_object;
+mod value_object;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ClientBuildError {
@@ -19,39 +22,47 @@ pub enum ClientBuildError {
 }
 
 #[derive(Debug, Clone)]
-struct Client {
+pub struct Client {
     base_url: String,
     requester: reqwest::Client,
     api_key: String,
 }
 
 #[derive(Default, Debug, Clone)]
-struct ClientBuilder {
+pub struct ClientBuilder {
     base_url: Option<String>,
     api_key: Option<String>,
     requester: Option<reqwest::Client>,
 }
 
 impl ClientBuilder {
+    #[must_use]
     pub fn new() -> Self {
         Self::default()
     }
 
-    pub fn base_url(mut self, base_url: String) -> Self {
-        self.base_url = Some(base_url);
+    #[must_use]
+    pub fn base_url(mut self, base_url: impl Into<String>) -> Self {
+        self.base_url = Some(base_url.into());
         self
     }
 
-    pub fn api_key(mut self, api_key: String) -> Self {
-        self.api_key = Some(api_key);
+    #[must_use]
+    pub fn api_key(mut self, api_key: impl Into<String>) -> Self {
+        self.api_key = Some(api_key.into());
         self
     }
 
+    #[must_use]
     pub fn requester(mut self, requester: reqwest::Client) -> Self {
         self.requester = Some(requester);
         self
     }
 
+    /// Builds a new client.
+    ///
+    /// # Errors
+    /// - [`ClientBuildError::ApiKeyMustBeSet`] if the API key is not set.
     pub fn build(self) -> Result<Client, ClientBuildError> {
         let base_url = self
             .base_url
@@ -68,6 +79,7 @@ impl ClientBuilder {
 }
 
 impl Client {
+    #[must_use]
     pub fn builder() -> ClientBuilder {
         ClientBuilder::new()
     }
