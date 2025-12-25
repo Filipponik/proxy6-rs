@@ -1,11 +1,11 @@
-use crate::{method::ApiMethod, response::SuccessResponse};
-pub use error::*;
+use crate::method::ApiMethod;
 use serde::de::DeserializeOwned;
 pub use value_object::*;
 
 const DEFAULT_BASE_URL: &str = "https://px6.link";
 
-mod error;
+pub(crate) mod deserializer;
+pub mod error;
 mod method;
 pub mod params;
 pub mod response;
@@ -30,6 +30,8 @@ pub struct ClientBuilder {
     api_key: Option<String>,
     requester: Option<reqwest::Client>,
 }
+
+type ApiResult<T> = Result<T, error::ApiError>;
 
 impl ClientBuilder {
     #[must_use]
@@ -125,10 +127,7 @@ impl Client {
     ///
     /// # Errors
     /// Any error can be thrown (see [`error::ApiError`])
-    pub async fn get_price(
-        &self,
-        params: params::GetPrice,
-    ) -> Result<response::GetPrice, ApiError> {
+    pub async fn get_price(&self, params: params::GetPrice) -> ApiResult<response::GetPrice> {
         self.get_request_with_params(&ApiMethod::GetPrice(params))
             .await
     }
@@ -137,10 +136,7 @@ impl Client {
     ///
     /// # Errors
     /// Any error can be thrown (see [`error::ApiError`])
-    pub async fn get_count(
-        &self,
-        params: params::GetCount,
-    ) -> Result<response::GetCount, ApiError> {
+    pub async fn get_count(&self, params: params::GetCount) -> ApiResult<response::GetCount> {
         self.get_request_with_params(&ApiMethod::GetCount(params))
             .await
     }
@@ -149,10 +145,7 @@ impl Client {
     ///
     /// # Errors
     /// Any error can be thrown (see [`error::ApiError`])
-    pub async fn get_country(
-        &self,
-        params: params::GetCountry,
-    ) -> Result<response::GetCountry, ApiError> {
+    pub async fn get_country(&self, params: params::GetCountry) -> ApiResult<response::GetCountry> {
         self.get_request_with_params(&ApiMethod::GetCountry(params))
             .await
     }
@@ -161,10 +154,7 @@ impl Client {
     ///
     /// # Errors
     /// Any error can be thrown (see [`error::ApiError`])
-    pub async fn get_proxy(
-        &self,
-        params: params::GetProxy,
-    ) -> Result<response::GetProxy, ApiError> {
+    pub async fn get_proxy(&self, params: params::GetProxy) -> ApiResult<response::GetProxy> {
         self.get_request_with_params(&ApiMethod::GetProxy(params))
             .await
     }
@@ -173,10 +163,7 @@ impl Client {
     ///
     /// # Errors
     /// Any error can be thrown (see [`error::ApiError`])
-    pub async fn set_type(
-        &self,
-        params: params::SetType,
-    ) -> Result<response::SuccessResponse, ApiError> {
+    pub async fn set_type(&self, params: params::SetType) -> ApiResult<response::SuccessResponse> {
         self.get_request_with_params(&ApiMethod::SetType(params))
             .await
     }
@@ -188,7 +175,7 @@ impl Client {
     pub async fn set_description(
         &self,
         params: params::SetDescription,
-    ) -> Result<response::SetDescription, ApiError> {
+    ) -> ApiResult<response::SetDescription> {
         self.get_request_with_params(&ApiMethod::SetDescription(params))
             .await
     }
@@ -197,7 +184,7 @@ impl Client {
     ///
     /// # Errors
     /// Any error can be thrown (see [`error::ApiError`])
-    pub async fn buy(&self, params: params::Buy) -> Result<response::Buy, ApiError> {
+    pub async fn buy(&self, params: params::Buy) -> ApiResult<response::Buy> {
         self.get_request_with_params(&ApiMethod::Buy(params)).await
     }
 
@@ -205,7 +192,7 @@ impl Client {
     ///
     /// # Errors
     /// Any error can be thrown (see [`error::ApiError`])
-    pub async fn prolong(&self, params: params::Prolong) -> Result<response::Prolong, ApiError> {
+    pub async fn prolong(&self, params: params::Prolong) -> ApiResult<response::Prolong> {
         self.get_request_with_params(&ApiMethod::Prolong(params))
             .await
     }
@@ -214,7 +201,7 @@ impl Client {
     ///
     /// # Errors
     /// Any error can be thrown (see [`error::ApiError`])
-    pub async fn delete(&self, params: params::Delete) -> Result<response::Delete, ApiError> {
+    pub async fn delete(&self, params: params::Delete) -> ApiResult<response::Delete> {
         self.get_request_with_params(&ApiMethod::Delete(params))
             .await
     }
@@ -223,7 +210,7 @@ impl Client {
     ///
     /// # Errors
     /// Any error can be thrown (see [`error::ApiError`])
-    pub async fn check(&self, params: params::Check) -> Result<response::Check, ApiError> {
+    pub async fn check(&self, params: params::Check) -> ApiResult<response::Check> {
         self.get_request_with_params(&ApiMethod::Check(params))
             .await
     }
@@ -232,7 +219,7 @@ impl Client {
     ///
     /// # Errors
     /// Any error can be thrown (see [`error::ApiError`])
-    pub async fn ip_auth(&self, params: params::IpAuth) -> Result<SuccessResponse, ApiError> {
+    pub async fn ip_auth(&self, params: params::IpAuth) -> ApiResult<response::SuccessResponse> {
         self.get_request_with_params(&ApiMethod::IpAuth(params))
             .await
     }

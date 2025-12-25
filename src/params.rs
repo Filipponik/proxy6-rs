@@ -80,6 +80,7 @@ impl ApiParams for GetProxy {
             ("descr", self.description.as_ref().map(ToString::to_string)),
             ("page", self.page.map(|page| page.to_string())),
             ("limit", self.limit.as_ref().map(ToString::to_string)),
+            ("nokey", Some(String::new())),
         ]
     }
 }
@@ -161,6 +162,7 @@ impl ApiParams for Buy {
                     None
                 },
             ),
+            ("nokey", Some(String::new())),
         ]
     }
 }
@@ -185,6 +187,7 @@ impl ApiParams for Prolong {
                         .join(","),
                 ),
             ),
+            ("nokey", Some(String::new())),
         ]
     }
 }

@@ -1,6 +1,6 @@
 use std::{fmt::Display, net::IpAddr};
 
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 #[derive(Debug, thiserror::Error)]
 pub enum BuildError {
@@ -20,7 +20,7 @@ pub enum BuildError {
 
 type Result<T> = std::result::Result<T, BuildError>;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct ProxyPeriod(usize); // Enum needed here? example 30
 
 impl ProxyPeriod {
@@ -43,7 +43,7 @@ impl Display for ProxyPeriod {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct Country(String);
 
 impl Country {
@@ -67,7 +67,7 @@ impl Display for Country {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct PageLimit(u16);
 
 impl PageLimit {
@@ -93,7 +93,7 @@ impl Display for PageLimit {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct ProxyDescription(String);
 
 impl ProxyDescription {
@@ -117,7 +117,7 @@ impl Display for ProxyDescription {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct ProxyId(String);
 
 impl ProxyId {
@@ -132,7 +132,7 @@ impl Display for ProxyId {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct ProxyString(String);
 
 impl ProxyString {
@@ -179,7 +179,7 @@ impl Display for ProxyString {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub enum IpsToConnect {
     Delete,
     Connect(Vec<IpAddr>),
@@ -197,9 +197,11 @@ impl Display for IpsToConnect {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub enum ProxyType {
+    #[serde(rename = "http")]
     Http,
+    #[serde(rename = "socks")]
     Socks5,
 }
 
@@ -212,7 +214,7 @@ impl Display for ProxyType {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub enum ProxyStatus {
     Active,
     Inactive,
@@ -231,7 +233,7 @@ impl Display for ProxyStatus {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub enum ProxyVersion {
     Ipv4,
     Ipv6,
@@ -248,8 +250,8 @@ impl Display for ProxyVersion {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct Port(u16);
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+pub struct Port(#[serde(deserialize_with = "crate::deserializer::to_u16")] u16);
 
 impl Port {
     #[must_use]
@@ -258,7 +260,7 @@ impl Port {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct Username(String);
 
 impl Username {
@@ -268,7 +270,7 @@ impl Username {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct Password(String);
 
 impl Password {
@@ -278,7 +280,7 @@ impl Password {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct ResponseStatus(String);
 
 impl ResponseStatus {
@@ -288,7 +290,7 @@ impl ResponseStatus {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct UserId(String);
 
 impl UserId {
@@ -298,7 +300,7 @@ impl UserId {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct UserBalance(String);
 
 impl UserBalance {
@@ -308,7 +310,7 @@ impl UserBalance {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct Currency(String);
 
 impl Currency {
@@ -318,13 +320,14 @@ impl Currency {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct Proxy {
     pub id: ProxyId,
     pub ip: IpAddr,
     pub host: IpAddr,
     pub port: Port,
     pub user: Username,
+    #[serde(rename = "pass")]
     pub password: Password,
     pub r#type: ProxyType,
     pub country: Country,
@@ -332,11 +335,13 @@ pub struct Proxy {
     pub date_end: String, // use chrono
     pub unixtime: u64,
     pub unixtime_end: u64,
+    #[serde(rename = "descr")]
     pub description: ProxyDescription,
-    pub active: bool, // "1" or "0"
+    #[serde(deserialize_with = "crate::deserializer::parse_proxy_status")]
+    pub active: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Deserialize, PartialEq)]
 pub struct Price(f64);
 
 impl Price {
@@ -346,7 +351,7 @@ impl Price {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct OrderId(usize);
 
 impl OrderId {

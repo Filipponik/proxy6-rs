@@ -1,9 +1,9 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 #[allow(clippy::wildcard_imports)]
 use crate::value_object::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct SuccessResponse {
     pub status: ResponseStatus,
     pub user_id: UserId,
@@ -11,7 +11,7 @@ pub struct SuccessResponse {
     pub currency: Currency,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct GetPrice {
     pub status: ResponseStatus,
     pub user_id: UserId,
@@ -23,7 +23,7 @@ pub struct GetPrice {
     pub count: usize,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct GetCount {
     pub status: ResponseStatus,
     pub user_id: UserId,
@@ -32,7 +32,7 @@ pub struct GetCount {
     pub count: usize,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct GetCountry {
     pub status: ResponseStatus,
     pub user_id: UserId,
@@ -41,7 +41,7 @@ pub struct GetCountry {
     pub list: Vec<Country>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct GetProxy {
     pub status: ResponseStatus,
     pub user_id: UserId,
@@ -51,7 +51,7 @@ pub struct GetProxy {
     pub list: Vec<Proxy>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct SetDescription {
     pub status: ResponseStatus,
     pub user_id: UserId,
@@ -60,7 +60,7 @@ pub struct SetDescription {
     pub count: usize,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Buy {
     pub status: ResponseStatus,
     pub user_id: UserId,
@@ -74,14 +74,14 @@ pub struct Buy {
     pub list: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct ProlongedProxy {
     pub id: ProxyId,
     pub date_end: String, // use chrono
     pub unixtime_end: u64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Prolong {
     pub status: ResponseStatus,
     pub user_id: UserId,
@@ -94,7 +94,7 @@ pub struct Prolong {
     pub list: Vec<ProlongedProxy>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Delete {
     pub status: ResponseStatus,
     pub user_id: UserId,
@@ -103,7 +103,7 @@ pub struct Delete {
     pub count: usize,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Check {
     pub status: ResponseStatus,
     pub user_id: UserId,
