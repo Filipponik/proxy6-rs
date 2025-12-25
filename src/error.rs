@@ -107,44 +107,38 @@ pub enum DocumentedErrorCode {
 }
 
 impl DocumentedErrorCode {
-    fn from_numeric_code(code: &str) -> Option<Self> {
+    fn from_numeric_code(code: usize) -> Option<Self> {
         Some(match code {
-            "30" => Self::Unknown,
-            "100" => Self::Key,
-            "105" => Self::Ip,
-            "110" => Self::Method,
-            "200" => Self::Count,
-            "210" => Self::Period,
-            "220" => Self::Country,
-            "230" => Self::Ids,
-            "240" => Self::Version,
-            "250" => Self::Description,
-            "260" => Self::Type,
-            "270" => Self::Port,
-            "280" => Self::ProxyString,
-            "300" => Self::ActiveProxyAllow,
-            "400" => Self::NoMoney,
-            "404" => Self::NotFound,
-            "410" => Self::Price,
+            30 => Self::Unknown,
+            100 => Self::Key,
+            105 => Self::Ip,
+            110 => Self::Method,
+            200 => Self::Count,
+            210 => Self::Period,
+            220 => Self::Country,
+            230 => Self::Ids,
+            240 => Self::Version,
+            250 => Self::Description,
+            260 => Self::Type,
+            270 => Self::Port,
+            280 => Self::ProxyString,
+            300 => Self::ActiveProxyAllow,
+            400 => Self::NoMoney,
+            404 => Self::NotFound,
+            410 => Self::Price,
             _ => return None,
         })
     }
-}
 
-impl ApiError {
-    pub(crate) fn parse_from_response_body(body: &str) -> Self {
-        let body = body.to_string();
-
+    pub(crate) fn parse_from_response_body(body: &str) -> Option<Self> {
         if let Ok(Value::Object(body_value)) = serde_json::from_str::<Value>(&body)
-            && let Some(Value::String(code)) = body_value.get("error_id")
-            && let Some(error_code) = DocumentedErrorCode::from_numeric_code(code)
+            && let Some(Value::Number(code)) = body_value.get("error_id")
+            && let Some(code) = code.as_u64().map(|code| code as usize)
+            && let Some(code) = DocumentedErrorCode::from_numeric_code(code)
         {
-            return Self::DocumentedError {
-                code: error_code,
-                response: body,
-            };
+            return Some(code);
         }
 
-        Self::UnknownError { response: body }
+        None
     }
 }

@@ -1,4 +1,4 @@
-use crate::method::ApiMethod;
+use crate::{error::DocumentedErrorCode, method::ApiMethod};
 use serde::de::DeserializeOwned;
 pub use value_object::*;
 
@@ -113,8 +113,18 @@ impl Client {
             });
         }
 
+        if let Some(possible_error) = DocumentedErrorCode::parse_from_response_body(&response_text)
+        {
+            return Err(error::ApiError::DocumentedError {
+                response: response_text,
+                code: possible_error,
+            });
+        };
+
         if !response_status.is_success() {
-            return Err(error::ApiError::parse_from_response_body(&response_text))?;
+            return Err(error::ApiError::UnknownError {
+                response: response_text,
+            })?;
         }
 
         serde_json::from_str(&response_text).map_err(|err| error::ApiError::SuccessButCannotParse {
