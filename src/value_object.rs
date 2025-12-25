@@ -35,6 +35,10 @@ impl ProxyPeriod {
             Ok(Self(period))
         }
     }
+
+    pub fn as_usize(&self) -> usize {
+        self.0
+    }
 }
 
 impl Display for ProxyPeriod {
@@ -58,6 +62,10 @@ impl Country {
         } else {
             Err(BuildError::CountryMustBeIso2)
         }
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
     }
 }
 
@@ -85,6 +93,10 @@ impl PageLimit {
             Ok(Self(limit))
         }
     }
+
+    pub fn as_u16(&self) -> u16 {
+        self.0
+    }
 }
 
 impl Display for PageLimit {
@@ -109,6 +121,10 @@ impl ProxyDescription {
             Ok(Self(description))
         }
     }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
 impl Display for ProxyDescription {
@@ -123,6 +139,10 @@ pub struct ProxyId(#[serde(deserialize_with = "crate::deserializer::to_string")]
 impl ProxyId {
     pub fn new(proxy_id: impl Into<String>) -> Self {
         Self(proxy_id.into())
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
     }
 }
 
@@ -170,6 +190,10 @@ impl ProxyString {
         }
 
         Ok(Self(proxy_string))
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
     }
 }
 
@@ -268,6 +292,10 @@ impl Username {
     pub const fn new(username: String) -> Self {
         Self(username)
     }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
@@ -288,6 +316,10 @@ impl ResponseStatus {
     pub const fn new(status: String) -> Self {
         Self(status)
     }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
@@ -297,6 +329,10 @@ impl UserId {
     #[must_use]
     pub const fn new(id: String) -> Self {
         Self(id)
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
     }
 }
 
@@ -308,6 +344,10 @@ impl UserBalance {
     pub const fn new(balance: String) -> Self {
         Self(balance)
     }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
@@ -317,6 +357,10 @@ impl Currency {
     #[must_use]
     pub const fn new(currency: String) -> Self {
         Self(currency)
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
     }
 }
 
@@ -349,6 +393,10 @@ impl Price {
     pub const fn new(price: f64) -> Self {
         Self(price)
     }
+
+    pub fn as_f64(&self) -> f64 {
+        self.0
+    }
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
@@ -358,5 +406,9 @@ impl OrderId {
     #[must_use]
     pub const fn new(id: usize) -> Self {
         Self(id)
+    }
+
+    pub fn as_usize(&self) -> usize {
+        self.0
     }
 }
