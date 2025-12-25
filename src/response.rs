@@ -1,3 +1,5 @@
+use std::net::IpAddr;
+
 use serde::Deserialize;
 
 #[allow(clippy::wildcard_imports)]
@@ -67,11 +69,12 @@ pub struct Buy {
     pub balance: UserBalance,
     pub currency: Currency,
     pub order_id: OrderId,
+    #[serde(deserialize_with = "crate::deserializer::to_usize")]
     pub count: usize,
     pub price: Price,
     pub period: ProxyPeriod,
     pub country: String,
-    pub list: String,
+    pub list: Vec<BoughtProxy>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -79,6 +82,24 @@ pub struct ProlongedProxy {
     pub id: ProxyId,
     pub date_end: String, // use chrono
     pub unixtime_end: u64,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct BoughtProxy {
+    pub id: ProxyId,
+    pub ip: IpAddr,
+    pub host: IpAddr,
+    pub port: Port,
+    pub user: Username,
+    #[serde(rename = "pass")]
+    pub password: Password,
+    pub r#type: ProxyType,
+    pub date: String,     // use chrono
+    pub date_end: String, // use chrono
+    pub unixtime: u64,
+    pub unixtime_end: u64,
+    #[serde(deserialize_with = "crate::deserializer::parse_proxy_status")]
+    pub active: bool,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -90,6 +111,7 @@ pub struct Prolong {
     pub order_id: OrderId,
     pub price: Price,
     pub period: ProxyPeriod,
+    #[serde(deserialize_with = "crate::deserializer::to_usize")]
     pub count: usize,
     pub list: Vec<ProlongedProxy>,
 }
@@ -109,6 +131,7 @@ pub struct Check {
     pub user_id: UserId,
     pub balance: UserBalance,
     pub currency: Currency,
-    pub proxy_id: ProxyId,
+    pub proxy_id: Option<ProxyId>,
     pub proxy_status: bool,
+    pub proxy_time: f64,
 }

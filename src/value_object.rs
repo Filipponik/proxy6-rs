@@ -21,7 +21,7 @@ pub enum BuildError {
 type Result<T> = std::result::Result<T, BuildError>;
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
-pub struct ProxyPeriod(usize); // Enum needed here? example 30
+pub struct ProxyPeriod(#[serde(deserialize_with = "crate::deserializer::to_usize")] usize); // Enum needed here? example 30
 
 impl ProxyPeriod {
     /// Create a new `ProxyPeriod` instance.
@@ -118,7 +118,7 @@ impl Display for ProxyDescription {
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
-pub struct ProxyId(String);
+pub struct ProxyId(#[serde(deserialize_with = "crate::deserializer::to_string")] String);
 
 impl ProxyId {
     pub fn new(proxy_id: impl Into<String>) -> Self {
@@ -342,7 +342,7 @@ pub struct Proxy {
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct Price(f64);
+pub struct Price(#[serde(deserialize_with = "crate::deserializer::to_f64")] f64);
 
 impl Price {
     #[must_use]

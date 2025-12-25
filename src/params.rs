@@ -24,9 +24,9 @@ pub(crate) trait ApiParams {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GetPrice {
-    count: usize,
-    period: ProxyPeriod,
-    version: Option<ProxyVersion>,
+    pub count: usize,
+    pub period: ProxyPeriod,
+    pub version: Option<ProxyVersion>,
 }
 
 impl ApiParams for GetPrice {
@@ -41,8 +41,8 @@ impl ApiParams for GetPrice {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GetCount {
-    country: Country,
-    version: Option<ProxyVersion>,
+    pub country: Country,
+    pub version: Option<ProxyVersion>,
 }
 
 impl ApiParams for GetCount {
@@ -56,7 +56,7 @@ impl ApiParams for GetCount {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GetCountry {
-    version: Option<ProxyVersion>,
+    pub version: Option<ProxyVersion>,
 }
 
 impl ApiParams for GetCountry {
@@ -67,10 +67,10 @@ impl ApiParams for GetCountry {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GetProxy {
-    state: Option<ProxyStatus>,
-    description: Option<ProxyDescription>,
-    page: Option<usize>,
-    limit: Option<PageLimit>,
+    pub state: Option<ProxyStatus>,
+    pub description: Option<ProxyDescription>,
+    pub page: Option<usize>,
+    pub limit: Option<PageLimit>,
 }
 
 impl ApiParams for GetProxy {
@@ -87,8 +87,8 @@ impl ApiParams for GetProxy {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SetType {
-    ids: Vec<ProxyId>,
-    r#type: ProxyType,
+    pub ids: Vec<ProxyId>,
+    pub r#type: ProxyType,
 }
 
 impl ApiParams for SetType {
@@ -111,9 +111,9 @@ impl ApiParams for SetType {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SetDescription {
-    new: ProxyDescription,
-    old: Option<ProxyDescription>, // old or ids is required
-    ids: Option<Vec<ProxyId>>,
+    pub new: ProxyDescription,
+    pub old: Option<ProxyDescription>, // old or ids is required
+    pub ids: Option<Vec<ProxyId>>,
 }
 
 impl ApiParams for SetDescription {
@@ -136,13 +136,13 @@ impl ApiParams for SetDescription {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Buy {
-    count: usize,
-    period: ProxyPeriod,
-    country: Country,
-    version: Option<ProxyVersion>,
-    r#type: Option<ProxyType>,
-    description: Option<ProxyDescription>,
-    auto_prolong: bool,
+    pub count: usize,
+    pub period: ProxyPeriod,
+    pub country: Country,
+    pub version: Option<ProxyVersion>,
+    pub r#type: Option<ProxyType>,
+    pub description: Option<ProxyDescription>,
+    pub auto_prolong: bool,
 }
 
 impl ApiParams for Buy {
@@ -169,8 +169,8 @@ impl ApiParams for Buy {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Prolong {
-    period: ProxyPeriod,
-    ids: Vec<ProxyId>,
+    pub period: ProxyPeriod,
+    pub ids: Vec<ProxyId>,
 }
 
 impl ApiParams for Prolong {
@@ -194,8 +194,8 @@ impl ApiParams for Prolong {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Delete {
-    ids: Option<Vec<ProxyId>>,
-    description: Option<ProxyDescription>, // ids or description is required
+    pub ids: Option<Vec<ProxyId>>,
+    pub description: Option<ProxyDescription>, // ids or description is required
 }
 
 impl ApiParams for Delete {
@@ -217,8 +217,8 @@ impl ApiParams for Delete {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Check {
-    ids: Option<Vec<ProxyId>>,         // plural? wtf?
-    proxy_string: Option<ProxyString>, // ids of proxy_string is required
+    pub ids: Option<Vec<ProxyId>>,         // plural? wtf?
+    pub proxy_string: Option<ProxyString>, // ids of proxy_string is required
 }
 
 impl ApiParams for Check {
@@ -240,7 +240,7 @@ impl ApiParams for Check {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct IpAuth {
-    ip: IpsToConnect,
+    pub ip: IpsToConnect,
 }
 
 impl ApiParams for IpAuth {

@@ -1,5 +1,4 @@
-use crate::{error::DocumentedErrorCode, method::ApiMethod};
-use serde::de::DeserializeOwned;
+use crate::method::ApiMethod;
 pub use value_object::*;
 
 const DEFAULT_BASE_URL: &str = "https://px6.link";
@@ -82,7 +81,7 @@ impl Client {
         ClientBuilder::new()
     }
 
-    async fn get_request_with_params<TResponse: DeserializeOwned>(
+    async fn get_request_with_params<TResponse: serde::de::DeserializeOwned>(
         &self,
         method: &method::ApiMethod,
     ) -> Result<TResponse, error::ApiError> {
@@ -113,7 +112,8 @@ impl Client {
             });
         }
 
-        if let Some(possible_error) = DocumentedErrorCode::parse_from_response_body(&response_text)
+        if let Some(possible_error) =
+            error::DocumentedErrorCode::parse_from_response_body(&response_text)
         {
             return Err(error::ApiError::DocumentedError {
                 response: response_text,
@@ -173,6 +173,8 @@ impl Client {
     ///
     /// # Errors
     /// Any error can be thrown (see [`error::ApiError`])
+    ///
+    /// Note that if all proxies in which you want to change the type already have the appropriate type (protocol), it will return an [`error::ApiError::DocumentedError`] with code [`error::DocumentedErrorCode::Unknown`].
     pub async fn set_type(&self, params: params::SetType) -> ApiResult<response::SuccessResponse> {
         self.get_request_with_params(&ApiMethod::SetType(params))
             .await
