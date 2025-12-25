@@ -107,7 +107,7 @@ pub enum DocumentedErrorCode {
 }
 
 impl DocumentedErrorCode {
-    fn from_numeric_code(code: usize) -> Option<Self> {
+    const fn from_numeric_code(code: usize) -> Option<Self> {
         Some(match code {
             30 => Self::Unknown,
             100 => Self::Key,
@@ -131,10 +131,10 @@ impl DocumentedErrorCode {
     }
 
     pub(crate) fn parse_from_response_body(body: &str) -> Option<Self> {
-        if let Ok(Value::Object(body_value)) = serde_json::from_str::<Value>(&body)
+        if let Ok(Value::Object(body_value)) = serde_json::from_str::<Value>(body)
             && let Some(Value::Number(code)) = body_value.get("error_id")
-            && let Some(code) = code.as_u64().map(|code| code as usize)
-            && let Some(code) = DocumentedErrorCode::from_numeric_code(code)
+            && let Some(Ok(code)) = code.as_u64().map(usize::try_from) // cast Number to usize
+            && let Some(code) = Self::from_numeric_code(code)
         {
             return Some(code);
         }

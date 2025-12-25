@@ -36,7 +36,8 @@ impl ProxyPeriod {
         }
     }
 
-    pub fn as_usize(&self) -> usize {
+    #[must_use]
+    pub const fn as_usize(&self) -> usize {
         self.0
     }
 }
@@ -64,6 +65,7 @@ impl Country {
         }
     }
 
+    #[must_use]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -94,7 +96,8 @@ impl PageLimit {
         }
     }
 
-    pub fn as_u16(&self) -> u16 {
+    #[must_use]
+    pub const fn as_u16(&self) -> u16 {
         self.0
     }
 }
@@ -122,6 +125,7 @@ impl ProxyDescription {
         }
     }
 
+    #[must_use]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -141,6 +145,7 @@ impl ProxyId {
         Self(proxy_id.into())
     }
 
+    #[must_use]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -192,6 +197,7 @@ impl ProxyString {
         Ok(Self(proxy_string))
     }
 
+    #[must_use]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -282,6 +288,11 @@ impl Port {
     pub const fn new(port: u16) -> Self {
         Self(port)
     }
+
+    #[must_use]
+    pub const fn as_u16(&self) -> u16 {
+        self.0
+    }
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
@@ -293,6 +304,7 @@ impl Username {
         Self(username)
     }
 
+    #[must_use]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -317,6 +329,7 @@ impl ResponseStatus {
         Self(status)
     }
 
+    #[must_use]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -331,6 +344,7 @@ impl UserId {
         Self(id)
     }
 
+    #[must_use]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -345,6 +359,7 @@ impl UserBalance {
         Self(balance)
     }
 
+    #[must_use]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -359,6 +374,7 @@ impl Currency {
         Self(currency)
     }
 
+    #[must_use]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -394,7 +410,8 @@ impl Price {
         Self(price)
     }
 
-    pub fn as_f64(&self) -> f64 {
+    #[must_use]
+    pub const fn as_f64(&self) -> f64 {
         self.0
     }
 }
@@ -408,7 +425,8 @@ impl OrderId {
         Self(id)
     }
 
-    pub fn as_usize(&self) -> usize {
+    #[must_use]
+    pub const fn as_usize(&self) -> usize {
         self.0
     }
 }

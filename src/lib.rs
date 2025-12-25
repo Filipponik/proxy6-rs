@@ -119,7 +119,7 @@ impl Client {
                 response: response_text,
                 code: possible_error,
             });
-        };
+        }
 
         if !response_status.is_success() {
             return Err(error::ApiError::UnknownError {
