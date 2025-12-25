@@ -314,7 +314,7 @@ mod tests {
 
         assert_eq!(
             request.to_query_string(),
-            "state=active&descr=test_description&page=3&limit=10"
+            "state=active&descr=test_description&page=3&limit=10&nokey"
         );
     }
 
@@ -327,7 +327,7 @@ mod tests {
             limit: None,
         };
 
-        assert_eq!(request.to_query_string(), "");
+        assert_eq!(request.to_query_string(), "nokey");
     }
 
     #[test]
@@ -379,7 +379,7 @@ mod tests {
 
         assert_eq!(
             request.to_query_string(),
-            "count=100&period=30&country=us&version=6&type=http&descr=new_proxy_description&auto_prolong"
+            "count=100&period=30&country=us&version=6&type=http&descr=new_proxy_description&auto_prolong&nokey"
         );
     }
 
@@ -395,7 +395,10 @@ mod tests {
             auto_prolong: false,
         };
 
-        assert_eq!(request.to_query_string(), "count=100&period=30&country=us");
+        assert_eq!(
+            request.to_query_string(),
+            "count=100&period=30&country=us&nokey"
+        );
     }
 
     #[test]
@@ -405,7 +408,7 @@ mod tests {
             ids: vec![ProxyId::new("id1"), ProxyId::new("id2")],
         };
 
-        assert_eq!(request.to_query_string(), "period=30&ids=id1,id2");
+        assert_eq!(request.to_query_string(), "period=30&ids=id1,id2&nokey");
     }
 
     #[test]
