@@ -2,8 +2,7 @@
 
 [![Rust](https://img.shields.io/badge/rust-1.70+-brightgreen.svg)](https://www.rust-lang.org/)
 [![Version](https://img.shields.io/github/v/release/Filipponik/proxy6-rs?sort=semver&label=version&color=brightgreen)](https://github.com/Filipponik/proxy6-rs/releases/latest)
-[![License](https://img.shields.io/github/license/Filipponik/proxy6-rs?color=brightgreen
-)](LICENSE)
+[![License](https://img.shields.io/github/license/Filipponik/proxy6-rs?color=brightgreen)](LICENSE)
 [![CI - Tests](https://github.com/Filipponik/proxy6-rs/actions/workflows/rust.yml/badge.svg?branch=master&event=push)](https://github.com/Filipponik/proxy6-rs/actions/workflows/rust.yml)
 [![Last Commit](https://img.shields.io/github/last-commit/Filipponik/proxy6-rs)](https://github.com/Filipponik/proxy6-rs/commits)
 
