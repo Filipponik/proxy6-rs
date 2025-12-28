@@ -124,7 +124,7 @@ impl Client {
         if !response_status.is_success() {
             return Err(error::ApiError::UnknownError {
                 response: response_text,
-            })?;
+            });
         }
 
         serde_json::from_str(&response_text).map_err(|err| error::ApiError::SuccessButCannotParse {

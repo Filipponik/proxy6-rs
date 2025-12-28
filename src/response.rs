@@ -73,7 +73,7 @@ pub struct Buy {
     pub count: usize,
     pub price: Price,
     pub period: ProxyPeriod,
-    pub country: String,
+    pub country: Country,
     pub list: Vec<BoughtProxy>,
 }
 

@@ -21,7 +21,7 @@ pub enum BuildError {
 type Result<T> = std::result::Result<T, BuildError>;
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
-pub struct ProxyPeriod(#[serde(deserialize_with = "crate::deserializer::to_usize")] usize); // Enum needed here? example 30
+pub struct ProxyPeriod(#[serde(deserialize_with = "crate::deserializer::to_usize")] usize);
 
 impl ProxyPeriod {
     /// Create a new `ProxyPeriod` instance.

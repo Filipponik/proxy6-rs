@@ -217,7 +217,7 @@ impl ApiParams for Delete {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Check {
-    pub ids: Option<Vec<ProxyId>>,         // plural? wtf?
+    pub ids: Option<Vec<ProxyId>>,
     pub proxy_string: Option<ProxyString>, // ids of proxy_string is required
 }
 
