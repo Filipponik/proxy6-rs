@@ -227,7 +227,7 @@ mod tests {
     fn test_to_usize_from_large_number() {
         let json = r#"{"value": 18446744073709551615}"#;
         let result: TestStructUsize = serde_json::from_str(json).unwrap();
-        assert_eq!(result.value, 18446744073709551615);
+        assert_eq!(result.value, 18_446_744_073_709_551_615);
     }
 
     #[test]
@@ -299,49 +299,49 @@ mod tests {
     fn test_to_f64_from_integer_number() {
         let json = r#"{"value": 42}"#;
         let result: TestStructF64 = serde_json::from_str(json).unwrap();
-        assert_eq!(result.value, 42.0);
+        assert!((result.value - 42.0).abs() < f64::EPSILON);
     }
 
     #[test]
     fn test_to_f64_from_float_number() {
         let json = r#"{"value": 123.456}"#;
         let result: TestStructF64 = serde_json::from_str(json).unwrap();
-        assert_eq!(result.value, 123.456);
+        assert!((result.value - 123.456).abs() < f64::EPSILON);
     }
 
     #[test]
     fn test_to_f64_from_negative_float() {
         let json = r#"{"value": -123.456}"#;
         let result: TestStructF64 = serde_json::from_str(json).unwrap();
-        assert_eq!(result.value, -123.456);
+        assert!((result.value - (-123.456)).abs() < f64::EPSILON);
     }
 
     #[test]
     fn test_to_f64_from_string_integer() {
         let json = r#"{"value": "42"}"#;
         let result: TestStructF64 = serde_json::from_str(json).unwrap();
-        assert_eq!(result.value, 42.0);
+        assert!((result.value - 42.0).abs() < f64::EPSILON);
     }
 
     #[test]
     fn test_to_f64_from_string_float() {
         let json = r#"{"value": "123.456"}"#;
         let result: TestStructF64 = serde_json::from_str(json).unwrap();
-        assert_eq!(result.value, 123.456);
+        assert!((result.value - 123.456).abs() < f64::EPSILON);
     }
 
     #[test]
     fn test_to_f64_from_scientific_notation_number() {
         let json = r#"{"value": 1.5e10}"#;
         let result: TestStructF64 = serde_json::from_str(json).unwrap();
-        assert_eq!(result.value, 15000000000.0);
+        assert!((result.value - 15_000_000_000.0).abs() < f64::EPSILON);
     }
 
     #[test]
     fn test_to_f64_from_string_scientific() {
         let json = r#"{"value": "1.5e10"}"#;
         let result: TestStructF64 = serde_json::from_str(json).unwrap();
-        assert_eq!(result.value, 15000000000.0);
+        assert!((result.value - 15_000_000_000.0).abs() < f64::EPSILON);
     }
 
     #[test]
@@ -450,14 +450,14 @@ mod tests {
     fn test_parse_proxy_status_from_string_zero() {
         let json = r#"{"status": "0"}"#;
         let result: TestStructStatus = serde_json::from_str(json).unwrap();
-        assert_eq!(result.status, false);
+        assert!(!result.status);
     }
 
     #[test]
     fn test_parse_proxy_status_from_string_one() {
         let json = r#"{"status": "1"}"#;
         let result: TestStructStatus = serde_json::from_str(json).unwrap();
-        assert_eq!(result.status, true);
+        assert!(result.status);
     }
 
     #[test]

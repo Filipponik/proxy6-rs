@@ -2,7 +2,7 @@ use std::{fmt::Display, net::IpAddr};
 
 use serde::Deserialize;
 
-#[derive(Debug, PartialEq, thiserror::Error)]
+#[derive(Debug, PartialEq, Eq, thiserror::Error)]
 pub enum BuildError {
     #[error("Proxy period must be greater than zero")]
     ProxyPeriodTooLow,
@@ -450,8 +450,8 @@ mod tests {
 
     #[test]
     fn test_proxy_period_new_large_value() {
-        let period = ProxyPeriod::new(999999).unwrap();
-        assert_eq!(period.as_usize(), 999999);
+        let period = ProxyPeriod::new(999_999).unwrap();
+        assert_eq!(period.as_usize(), 999_999);
     }
 
     #[test]
@@ -691,7 +691,7 @@ mod tests {
 
     #[test]
     fn test_username_new_empty() {
-        let username = Username::new("".to_string());
+        let username = Username::new(String::new());
         assert_eq!(username.as_str(), "");
     }
 
@@ -705,7 +705,7 @@ mod tests {
 
     #[test]
     fn test_password_new_empty() {
-        let password = Password::new("".to_string());
+        let password = Password::new(String::new());
         assert_eq!(password.0, "");
     }
 
@@ -746,19 +746,19 @@ mod tests {
     #[test]
     fn test_price_new() {
         let price = Price::new(9.99);
-        assert_eq!(price.as_f64(), 9.99);
+        assert!((price.as_f64() - 9.99).abs() < f64::EPSILON);
     }
 
     #[test]
     fn test_price_new_zero() {
         let price = Price::new(0.0);
-        assert_eq!(price.as_f64(), 0.0);
+        assert!((price.as_f64() - 0.0).abs() < f64::EPSILON);
     }
 
     #[test]
     fn test_price_new_negative() {
         let price = Price::new(-5.5);
-        assert_eq!(price.as_f64(), -5.5);
+        assert!((price.as_f64() - (-5.5)).abs() < f64::EPSILON);
     }
 
     // ===== OrderId tests =====
@@ -777,7 +777,7 @@ mod tests {
 
     #[test]
     fn test_order_id_new_large() {
-        let id = OrderId::new(18446744073709551615);
-        assert_eq!(id.as_usize(), 18446744073709551615);
+        let id = OrderId::new(18_446_744_073_709_551_615);
+        assert_eq!(id.as_usize(), 18_446_744_073_709_551_615);
     }
 }
