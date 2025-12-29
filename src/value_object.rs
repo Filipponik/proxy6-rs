@@ -430,8 +430,11 @@ impl OrderId {
         self.0
     }
 }
+
 #[cfg(test)]
 mod tests {
+    use pretty_assertions::assert_eq;
+
     use super::*;
 
     // ===== ProxyPeriod tests =====
