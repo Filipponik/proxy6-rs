@@ -236,3 +236,82 @@ impl Client {
             .await
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_builder_new() {
+        let builder = ClientBuilder::new();
+        assert_eq!(builder.base_url, None);
+        assert_eq!(builder.api_key, None);
+        assert!(builder.requester.is_none());
+    }
+
+    #[test]
+    fn test_builder_base_url() {
+        let builder = ClientBuilder::new().base_url("https://custom.example.com");
+        assert_eq!(
+            builder.base_url,
+            Some("https://custom.example.com".to_string())
+        );
+        assert_eq!(builder.api_key, None);
+        assert!(builder.requester.is_none());
+    }
+
+    #[test]
+    fn test_builder_api_key() {
+        let builder = ClientBuilder::new().api_key("test-api-key");
+        assert_eq!(builder.base_url, None);
+        assert_eq!(builder.api_key, Some("test-api-key".to_string()));
+        assert!(builder.requester.is_none());
+    }
+
+    #[test]
+    fn test_builder_requester() {
+        let requester = reqwest::Client::new();
+        let builder = ClientBuilder::new().requester(requester);
+        assert_eq!(builder.base_url, None);
+        assert_eq!(builder.api_key, None);
+        assert!(builder.requester.is_some());
+    }
+
+    #[test]
+    fn test_builder_build_success() {
+        let client = ClientBuilder::new()
+            .base_url("https://custom.example.com")
+            .api_key("test-api-key")
+            .build()
+            .unwrap();
+
+        assert_eq!(client.base_url, "https://custom.example.com");
+        assert_eq!(client.api_key, "test-api-key");
+        // Client always has a requester
+    }
+
+    #[test]
+    fn test_builder_build_with_default_base_url() {
+        let client = ClientBuilder::new()
+            .api_key("test-api-key")
+            .build()
+            .unwrap();
+
+        assert_eq!(client.base_url, DEFAULT_BASE_URL);
+        assert_eq!(client.api_key, "test-api-key");
+    }
+
+    #[test]
+    fn test_builder_build_without_api_key_error() {
+        let result = ClientBuilder::new().build();
+        assert!(matches!(result, Err(ClientBuildError::ApiKeyMustBeSet)));
+    }
+
+    #[test]
+    fn test_client_builder() {
+        let client = Client::builder();
+        assert_eq!(client.base_url, None);
+        assert_eq!(client.api_key, None);
+        assert!(client.requester.is_none());
+    }
+}
