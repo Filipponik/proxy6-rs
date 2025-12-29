@@ -31,7 +31,7 @@ pub enum ApiError {
 }
 
 /// Error that exists in the [API documentation](https://px6.me/developers).
-#[derive(Debug, Clone, PartialEq, thiserror::Error)]
+#[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 pub enum DocumentedErrorCode {
     /// 30 - Error unknown - Unknown error.
     #[error("Unknown error")]
