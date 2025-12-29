@@ -2,7 +2,7 @@ use std::{fmt::Display, net::IpAddr};
 
 use serde::Deserialize;
 
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, PartialEq, thiserror::Error)]
 pub enum BuildError {
     #[error("Proxy period must be greater than zero")]
     ProxyPeriodTooLow,
