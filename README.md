@@ -11,7 +11,7 @@ A modern, type-safe Rust client for the [Proxy6](https://proxy6.net/) API. This 
 ## ✨ Features
 
 - **🔒 Type Safety** - Strongly typed API with compile-time guarantees
-- **🚀 Async/Await** - Built on `reqwest` for high-performance async operations
+- **🚀 Async/Await** - Built on `reqwest` for high-performance async or sync operations
 - **📚 Comprehensive** - Complete coverage of all Proxy6 API methods
 - **🛡️ Error Handling** - Detailed error types with proper error categorization
 - **🧪 Well-Tested** - Extensive test suite with mock server support
@@ -28,13 +28,13 @@ cargo add proxy6
 ## 🚀 Quick Start
 
 ```rust
-use proxy6::{Client, Country, params::*};
+use proxy6::{AsyncClient, Country, params::*};
 use std::error::Error;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     // Create a client with your API key
-    let client = Client::builder().api_key("your-api-key-here").build()?;
+    let client = AsyncClient::builder().api_key("your-api-key-here").build()?;
 
     // Get available countries
     let countries = client.get_country(GetCountry { version: None }).await?;
@@ -104,15 +104,27 @@ match client.get_proxy(/* params */).await {
 
 ### Custom HTTP Client
 
-You can provide your own `reqwest::Client` instance:
+You can provide your own `reqwest::Client` instance (or `reqwest::blocking::Client`):
 
 ```rust
-let custom_client = reqwest::ClientBuilder::new()
+// Async client
+let reqwest_async_client = reqwest::ClientBuilder::new()
     .timeout(std::time::Duration::from_secs(30))
     .proxy(reqwest::Proxy::all("user:pass@127.0.0.1:8123")?)
     .build()?;
 
-let client = proxy6::Client::builder()
+let async_client = proxy6::AsyncClient::builder()
+    .api_key("your-api-key")
+    .requester(custom_client)
+    .build()?;
+
+// Sync client
+let reqwest_sync_client = reqwest::blocking::ClientBuilder::new()
+    .timeout(std::time::Duration::from_secs(30))
+    .proxy(reqwest::Proxy::all("user:pass@127.0.0.1:8123")?)
+    .build()?;
+
+let sync_client = proxy6::SyncClient::builder()
     .api_key("your-api-key")
     .requester(custom_client)
     .build()?;
