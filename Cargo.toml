@@ -14,8 +14,13 @@ categories = ["web-programming", "api-bindings"]
 name = "proxy6"
 path = "src/lib.rs"
 
+[features]
+default = ["async_client"]
+async_client = ["dep:reqwest"]
+sync_client = ["dep:reqwest", "reqwest/blocking"]
+
 [dependencies]
-reqwest = { version = "0.12.27", features = ["json", "rustls-tls", "blocking"], default-features = false }
+reqwest = { version = "0.12.27", features = ["json", "rustls-tls"], default-features = false, optional = true }
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.146"
 thiserror = "2.0.17"

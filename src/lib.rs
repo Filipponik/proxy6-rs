@@ -1,4 +1,6 @@
+#[cfg(feature = "async_client")]
 pub use async_client::*;
+#[cfg(feature = "sync_client")]
 pub use sync_client::*;
 pub use value_object::*;
 
