@@ -4,12 +4,14 @@ pub use async_client::*;
 pub use sync_client::*;
 pub use value_object::*;
 
+#[cfg(feature = "async_client")]
 mod async_client;
 pub(crate) mod deserializer;
 pub mod error;
 mod method;
 pub mod params;
 pub mod response;
+#[cfg(feature = "sync_client")]
 mod sync_client;
 mod value_object;
 
