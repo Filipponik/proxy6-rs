@@ -19,10 +19,14 @@ A modern, type-safe Rust client for the [Proxy6](https://proxy6.net/) API. This 
 
 ## 📦 Installation
 
-Add to `Cargo.toml` or add to project:
+Add to your project:
 
 ```shell
+# only async client
 cargo add proxy6
+
+# only sync client
+cargo add proxy6 --no-default-features --features=sync_client
 ```
 
 ## 🚀 Quick Start
