@@ -20,14 +20,14 @@ async_client = []
 sync_client = ["reqwest/blocking"]
 
 [dependencies]
-reqwest = { version = "0.12.27", features = ["rustls-tls"], default-features = false }
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.146"
-thiserror = "2.0.17"
+reqwest = { version = "0.13", default-features = false }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
 
 [dev-dependencies]
-mockito = "1.7.0"
-tokio = { version = "1.32.0", features = ["full"] }
+mockito = "1.7"
+tokio = { version = "1.53", features = ["full"] }
 pretty_assertions = "1.4.1"
 
 [lints.clippy]
