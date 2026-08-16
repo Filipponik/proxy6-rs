@@ -267,6 +267,7 @@ impl Display for ProxyStatus {
 pub enum ProxyVersion {
     Ipv4,
     Ipv6,
+    MtProto,
     Ipv4Shared,
 }
 
@@ -275,6 +276,7 @@ impl Display for ProxyVersion {
         match self {
             Self::Ipv4 => write!(f, "4"),
             Self::Ipv6 => write!(f, "6"),
+            Self::MtProto => write!(f, "5"),
             Self::Ipv4Shared => write!(f, "3"),
         }
     }
